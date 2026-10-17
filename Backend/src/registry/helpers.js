@@ -69,4 +69,4 @@ function buildPermissionCatalog(modules) {
   return catalog;
 }
 
-module.exports = { DEFAULT_ACTIONS, sub, mod, buildPermissionCatalog };
+export { DEFAULT_ACTIONS, sub, mod, buildPermissionCatalog };

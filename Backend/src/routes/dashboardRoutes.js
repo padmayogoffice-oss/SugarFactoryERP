@@ -3,13 +3,13 @@
  * when the caller holds the matching permission, so a store keeper sees stock
  * figures but never finance totals.
  */
-const express = require('express');
-const asyncHandler = require('../utils/asyncHandler');
-const { ok } = require('../utils/apiResponse');
-const { authenticate } = require('../middleware/auth');
-const analytics = require('../services/analyticsService');
-const { hasPermission } = require('../services/permissionService');
-const { modules } = require('../registry');
+import express from 'express';
+import asyncHandler from '../utils/asyncHandler.js';
+import { ok } from '../utils/apiResponse.js';
+import { authenticate } from '../middleware/auth.js';
+import * as analytics from '../services/analyticsService.js';
+import { hasPermission } from '../services/permissionService.js';
+import { modules } from '../registry/index.js';
 
 const router = express.Router();
 
@@ -115,4 +115,4 @@ router.get(
   }),
 );
 
-module.exports = router;
+export default router;

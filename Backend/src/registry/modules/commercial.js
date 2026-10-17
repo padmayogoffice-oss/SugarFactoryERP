@@ -6,9 +6,9 @@
  * outgoing sugar, maintenance tracks plant availability, and finance holds the
  * chart of accounts, vouchers and statements.
  */
-const { f, FIELD_TYPES: T } = require('../fields');
-const { sub, mod } = require('../helpers');
-const { STATUS, DOC_STATUS, PAYMENT_STATUS, SHIFTS, UOM_OPTIONS, SUGAR_GRADES, PAYMENT_MODES } = require('../constants');
+import { f, FIELD_TYPES as T } from '../fields.js';
+import { sub, mod } from '../helpers.js';
+import { STATUS, DOC_STATUS, PAYMENT_STATUS, SHIFTS, UOM_OPTIONS, SUGAR_GRADES, PAYMENT_MODES } from '../constants.js';
 
 const notes = f('remarks', 'Remarks', T.TEXT, { inList: false });
 
@@ -448,4 +448,4 @@ const finance = mod('finance', 'Finance & Accounts', {
   ],
 });
 
-module.exports = [sales, quality, maintenance, finance];
+export default [sales, quality, maintenance, finance];

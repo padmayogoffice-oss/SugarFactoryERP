@@ -3,12 +3,12 @@
  * caller may access, which the frontend uses to build its sidebar and routes so
  * the UI can never advertise a page the API would reject.
  */
-const express = require('express');
-const asyncHandler = require('../utils/asyncHandler');
-const { ok } = require('../utils/apiResponse');
-const { authenticate } = require('../middleware/auth');
-const { toClientTree } = require('../registry');
-const { hasSubmoduleAccess, hasPermission } = require('../services/permissionService');
+import express from 'express';
+import asyncHandler from '../utils/asyncHandler.js';
+import { ok } from '../utils/apiResponse.js';
+import { authenticate } from '../middleware/auth.js';
+import { toClientTree } from '../registry/index.js';
+import { hasSubmoduleAccess, hasPermission } from '../services/permissionService.js';
 
 const router = express.Router();
 
@@ -47,4 +47,4 @@ router.get(
   }),
 );
 
-module.exports = router;
+export default router;

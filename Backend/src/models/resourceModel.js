@@ -3,9 +3,9 @@
  * that has no hand-written model, keyed by the registry `ref` name so
  * `populate()` resolves references across modules.
  */
-const mongoose = require('mongoose');
-const { toMongooseType } = require('../registry/fields');
-const { modules } = require('../registry');
+import mongoose from 'mongoose';
+import { toMongooseType } from '../registry/fields.js';
+import { modules } from '../registry/index.js';
 
 /** camelCase submodule key -> PascalCase model name (matches registry `ref` values). */
 function modelNameFor(submoduleKey) {
@@ -65,4 +65,4 @@ function buildResourceModels() {
   return models;
 }
 
-module.exports = { buildResourceModels, modelNameFor };
+export { buildResourceModels, modelNameFor };

@@ -3,21 +3,24 @@
  * opaque random strings stored only as hashes. Rotation revokes the old token on
  * every use, and replaying a revoked token revokes the user's whole session set.
  */
-const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
-const env = require('../config/env');
-const RefreshToken = require('../models/RefreshToken');
+import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
+import 'dotenv/config';
+import RefreshToken from '../models/RefreshToken.js';
+
+const accessSecret = process.env.JWT_ACCESS_SECRET || 'dev-access-secret-change-me';
+const refreshTtl = process.env.JWT_REFRESH_TTL || '7d';
 
 function signAccessToken(user) {
   return jwt.sign(
     { sub: String(user._id), isSuperAdmin: Boolean(user.isSuperAdmin) },
-    env.jwt.accessSecret,
-    { expiresIn: env.jwt.accessTtl },
+    accessSecret,
+    { expiresIn: process.env.JWT_ACCESS_TTL || '30m' },
   );
 }
 
 function verifyAccessToken(token) {
-  return jwt.verify(token, env.jwt.accessSecret);
+  return jwt.verify(token, accessSecret);
 }
 
 function hashToken(token) {
@@ -40,7 +43,7 @@ function parseDuration(value) {
  */
 async function issueRefreshToken(userId, { userAgent = '', ipAddress = '' } = {}) {
   const raw = crypto.randomBytes(48).toString('hex');
-  const expiresAt = new Date(Date.now() + parseDuration(env.jwt.refreshTtl));
+  const expiresAt = new Date(Date.now() + parseDuration(refreshTtl));
 
   await RefreshToken.create({
     user: userId,
@@ -83,13 +86,4 @@ async function revokeAllForUser(userId) {
   await RefreshToken.updateMany({ user: userId, revokedAt: null }, { revokedAt: new Date() });
 }
 
-module.exports = {
-  signAccessToken,
-  verifyAccessToken,
-  issueRefreshToken,
-  rotateRefreshToken,
-  revokeRefreshToken,
-  revokeAllForUser,
-  hashToken,
-  parseDuration,
-};
+export { signAccessToken, verifyAccessToken, issueRefreshToken, rotateRefreshToken, revokeRefreshToken, revokeAllForUser, hashToken, parseDuration };

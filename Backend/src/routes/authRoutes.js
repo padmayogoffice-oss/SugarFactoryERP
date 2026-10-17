@@ -3,13 +3,13 @@
  * service, login/register/change-password writes are audited, and refresh and
  * logout stay unauthenticated because they operate on the refresh token itself.
  */
-const express = require('express');
-const asyncHandler = require('../utils/asyncHandler');
-const { ok, created } = require('../utils/apiResponse');
-const ApiError = require('../utils/ApiError');
-const authService = require('../services/authService');
-const { authenticate } = require('../middleware/auth');
-const { auditLog } = require('../middleware/auditLog');
+import express from 'express';
+import asyncHandler from '../utils/asyncHandler.js';
+import { ok, created } from '../utils/apiResponse.js';
+import ApiError from '../utils/ApiError.js';
+import * as authService from '../services/authService.js';
+import { authenticate } from '../middleware/auth.js';
+import { auditLog } from '../middleware/auditLog.js';
 
 const router = express.Router();
 
@@ -88,4 +88,4 @@ router.post(
   }),
 );
 
-module.exports = router;
+export default router;

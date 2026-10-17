@@ -3,11 +3,11 @@
  * reference population and unique-field handling all come from the submodule's
  * registry metadata, so one implementation serves every resource.
  */
-const mongoose = require('mongoose');
-const ApiError = require('../utils/ApiError');
-const asyncHandler = require('../utils/asyncHandler');
-const { validatePayload } = require('../registry/fields');
-const { ok, created, paginated, buildListQuery, escapeRegex } = require('../utils/apiResponse');
+import mongoose from 'mongoose';
+import ApiError from '../utils/ApiError.js';
+import asyncHandler from '../utils/asyncHandler.js';
+import { validatePayload } from '../registry/fields.js';
+import { ok, created, paginated, buildListQuery, escapeRegex } from '../utils/apiResponse.js';
 
 const COMPUTED = {
   sugarFromCane: (doc) => {
@@ -179,4 +179,4 @@ function createResourceController({ model, submodule }) {
   return { list, getOne, create, update, remove, options, computedFields };
 }
 
-module.exports = { createResourceController, applyComputed, COMPUTED, FIELD_COMPUTATIONS };
+export { createResourceController, applyComputed, COMPUTED, FIELD_COMPUTATIONS };

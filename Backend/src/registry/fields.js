@@ -7,7 +7,7 @@
  * field is defined exactly once.
  */
 
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const FIELD_TYPES = {
   STRING: 'string',
@@ -220,4 +220,4 @@ function toClientSchema(fields) {
   });
 }
 
-module.exports = { FIELD_TYPES, f, toMongooseType, coerce, validateValue, validatePayload, toClientSchema };
+export { FIELD_TYPES, f, toMongooseType, coerce, validateValue, validatePayload, toClientSchema };

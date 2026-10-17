@@ -7,13 +7,13 @@
  * sidebar, router and generic list/form screens. Adding a submodule here is
  * therefore enough to make it appear end to end.
  */
-const coreModules = require('./modules/core');
-const operationsModules = require('./modules/operations');
-const supplyModules = require('./modules/supply');
-const commercialModules = require('./modules/commercial');
-const peopleModules = require('./modules/people');
-const { buildPermissionCatalog } = require('./helpers');
-const { toClientSchema } = require('./fields');
+import coreModules from './modules/core.js';
+import operationsModules from './modules/operations.js';
+import supplyModules from './modules/supply.js';
+import commercialModules from './modules/commercial.js';
+import peopleModules from './modules/people.js';
+import { buildPermissionCatalog } from './helpers.js';
+import { toClientSchema } from './fields.js';
 
 const modules = [
   ...coreModules,
@@ -80,4 +80,4 @@ function toClientTree() {
   }));
 }
 
-module.exports = { modules, permissionCatalog, getSubmodule, getModule, toClientTree, pagePermission };
+export { modules, permissionCatalog, getSubmodule, getModule, toClientTree, pagePermission };

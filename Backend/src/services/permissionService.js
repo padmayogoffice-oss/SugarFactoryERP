@@ -4,7 +4,7 @@
  * everything. Wildcards are resolved here rather than stored expanded, so a role
  * holding `stores:*:view` keeps working when new stores submodules are added.
  */
-const Role = require('../models/Role');
+import Role from '../models/Role.js';
 
 const WILDCARD = '*';
 
@@ -58,4 +58,4 @@ function hasSubmoduleAccess(permissions, moduleKey, submoduleKey) {
   });
 }
 
-module.exports = { resolvePermissions, hasPermission, hasSubmoduleAccess, WILDCARD };
+export { resolvePermissions, hasPermission, hasSubmoduleAccess, WILDCARD };

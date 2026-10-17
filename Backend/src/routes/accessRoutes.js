@@ -4,18 +4,18 @@
  * self-protection rules (for example, you cannot delete your own account or the
  * built-in Super Admin role).
  */
-const express = require('express');
-const mongoose = require('mongoose');
-const asyncHandler = require('../utils/asyncHandler');
-const ApiError = require('../utils/ApiError');
-const { ok, created, paginated, buildListQuery, escapeRegex } = require('../utils/apiResponse');
-const User = require('../models/User');
-const Role = require('../models/Role');
-const ActivityLog = require('../models/ActivityLog');
-const { authenticate, authorize } = require('../middleware/auth');
-const { auditLog } = require('../middleware/auditLog');
-const { permissionCatalog, getSubmodule, modules } = require('../registry');
-const { validatePayload } = require('../registry/fields');
+import express from 'express';
+import mongoose from 'mongoose';
+import asyncHandler from '../utils/asyncHandler.js';
+import ApiError from '../utils/ApiError.js';
+import { ok, created, paginated, buildListQuery, escapeRegex } from '../utils/apiResponse.js';
+import User from '../models/User.js';
+import Role from '../models/Role.js';
+import ActivityLog from '../models/ActivityLog.js';
+import { authenticate, authorize } from '../middleware/auth.js';
+import { auditLog } from '../middleware/auditLog.js';
+import { permissionCatalog, getSubmodule, modules } from '../registry/index.js';
+import { validatePayload } from '../registry/fields.js';
 
 const router = express.Router();
 
@@ -280,4 +280,4 @@ router.get('/activity-logs', authenticate, authorize('access:activityLog:view'),
   return paginated(res, items, { page, limit, total });
 }));
 
-module.exports = router;
+export default router;

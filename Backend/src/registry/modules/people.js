@@ -4,9 +4,9 @@
  * `reports` declares report-style pages only (no submodules); each page key maps
  * to a handler in services/reportService.js and renders generically on the client.
  */
-const { f, FIELD_TYPES: T } = require('../fields');
-const { sub, mod } = require('../helpers');
-const { STATUS, GENDERS, PAYMENT_MODES, SHIFTS } = require('../constants');
+import { f, FIELD_TYPES as T } from '../fields.js';
+import { sub, mod } from '../helpers.js';
+import { STATUS, GENDERS, PAYMENT_MODES, SHIFTS } from '../constants.js';
 
 const notes = f('remarks', 'Remarks', T.TEXT, { inList: false });
 
@@ -151,4 +151,4 @@ const reports = mod('reports', 'Reports & Analytics', {
   ],
 });
 
-module.exports = [hr, reports];
+export default [hr, reports];

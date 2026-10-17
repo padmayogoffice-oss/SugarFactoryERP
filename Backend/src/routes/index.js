@@ -4,11 +4,16 @@
  * then a fully permission-checked CRUD router is generated for every remaining
  * registry submodule.
  */
-const express = require('express');
-const { buildResourceModels } = require('../models/resourceModel');
-const { modules } = require('../registry');
-const { createResourceRouter } = require('./resourceRouter');
-const { authenticate } = require('../middleware/auth');
+import express from 'express';
+import { buildResourceModels } from '../models/resourceModel.js';
+import { modules } from '../registry/index.js';
+import { createResourceRouter } from './resourceRouter.js';
+import { authenticate } from '../middleware/auth.js';
+import authRoutes from './authRoutes.js';
+import accessRoutes from './accessRoutes.js';
+import navigationRoutes from './navigationRoutes.js';
+import dashboardRoutes from './dashboardRoutes.js';
+import reportRoutes from './reportRoutes.js';
 
 /**
  * Mounts one router per registry submodule at `/api/<module>/<submodule>`.
@@ -19,11 +24,11 @@ function buildApiRouter() {
   const api = express.Router();
   const resources = buildResourceModels();
 
-  api.use('/auth', require('./authRoutes'));
-  api.use('/access', require('./accessRoutes'));
-  api.use('/navigation', require('./navigationRoutes'));
-  api.use('/dashboard', require('./dashboardRoutes'));
-  api.use('/reports', require('./reportRoutes'));
+  api.use('/auth', authRoutes);
+  api.use('/access', accessRoutes);
+  api.use('/navigation', navigationRoutes);
+  api.use('/dashboard', dashboardRoutes);
+  api.use('/reports', reportRoutes);
 
   for (const moduleDef of modules) {
     if (moduleDef.key === 'access') continue; // handled by accessRoutes
@@ -43,4 +48,4 @@ function buildApiRouter() {
   return api;
 }
 
-module.exports = { buildApiRouter };
+export { buildApiRouter };

@@ -52,8 +52,9 @@ api.interceptors.response.use(
     const original = error.config
     const status = error.response?.status
     const isRefreshCall = original?.url?.includes('/auth/refresh')
+    const isAuthEntryCall = /\/auth\/(login|register)\/?$/.test(original?.url?.split('?')[0] || '')
 
-    if (status === 401 && !original?._retried && !isRefreshCall) {
+    if (status === 401 && !original?._retried && !isRefreshCall && !isAuthEntryCall) {
       original._retried = true
       try {
         refreshPromise = refreshPromise || refreshSession()

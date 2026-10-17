@@ -3,7 +3,7 @@
  * leak cannot be replayed. `replacedByHash` supports rotation, and the TTL index
  * lets MongoDB expire stale rows automatically.
  */
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const refreshTokenSchema = new mongoose.Schema(
   {
@@ -20,4 +20,4 @@ const refreshTokenSchema = new mongoose.Schema(
 
 refreshTokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-module.exports = mongoose.model('RefreshToken', refreshTokenSchema);
+export default mongoose.model('RefreshToken', refreshTokenSchema);

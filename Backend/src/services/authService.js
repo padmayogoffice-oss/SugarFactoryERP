@@ -3,17 +3,11 @@
  * change. Failed logins increment a lockout counter, and every credential change
  * revokes the user's refresh tokens.
  */
-const User = require('../models/User');
-const Role = require('../models/Role');
-const ApiError = require('../utils/ApiError');
-const { resolvePermissions } = require('./permissionService');
-const {
-  signAccessToken,
-  issueRefreshToken,
-  rotateRefreshToken,
-  revokeRefreshToken,
-  revokeAllForUser,
-} = require('./tokenService');
+import User from '../models/User.js';
+import Role from '../models/Role.js';
+import ApiError from '../utils/ApiError.js';
+import { resolvePermissions } from './permissionService.js';
+import { signAccessToken, issueRefreshToken, rotateRefreshToken, revokeRefreshToken, revokeAllForUser } from './tokenService.js';
 
 const MAX_FAILED_ATTEMPTS = 8;
 const LOCK_MINUTES = 15;
@@ -173,4 +167,4 @@ async function currentUser(user) {
   };
 }
 
-module.exports = { login, register, refresh, logout, changePassword, currentUser, buildSession };
+export { login, register, refresh, logout, changePassword, currentUser, buildSession };

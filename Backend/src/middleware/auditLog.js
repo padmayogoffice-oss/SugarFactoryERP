@@ -3,7 +3,7 @@
  * only after the response succeeds, and it records the actor, the resource and
  * the request metadata for every write operation.
  */
-const ActivityLog = require('../models/ActivityLog');
+import ActivityLog from '../models/ActivityLog.js';
 
 const WRITE_ACTIONS = { POST: 'create', PUT: 'update', PATCH: 'update', DELETE: 'delete' };
 
@@ -43,4 +43,4 @@ function auditLog({ module, submodule = '' } = {}) {
   };
 }
 
-module.exports = { auditLog };
+export { auditLog };

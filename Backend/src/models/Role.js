@@ -2,7 +2,7 @@
  * Role model. A role is a named bundle of permission keys; users receive the
  * union of the permissions of all roles assigned to them.
  */
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 /**
  * Role documents hold the permission keys granted to users assigned that role.
@@ -23,4 +23,4 @@ const roleSchema = new mongoose.Schema(
 
 roleSchema.index({ name: 1 });
 
-module.exports = mongoose.model('Role', roleSchema);
+export default mongoose.model('Role', roleSchema);

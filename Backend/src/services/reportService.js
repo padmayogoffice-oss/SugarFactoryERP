@@ -4,8 +4,8 @@
  * Adding a report therefore needs only a new function here plus a page entry in
  * the module registry.
  */
-const mongoose = require('mongoose');
-const ApiError = require('../utils/ApiError');
+import mongoose from 'mongoose';
+import ApiError from '../utils/ApiError.js';
 
 function model(name) {
   const Model = mongoose.models[name];
@@ -697,19 +697,4 @@ async function dayBook(query) {
   };
 }
 
-module.exports = {
-  caneReport,
-  productionReport,
-  inventoryReport,
-  purchaseReport,
-  salesReport,
-  financeReport,
-  payrollReport,
-  qualityReport,
-  maintenanceReport,
-  statutoryRegister,
-  trialBalance,
-  profitAndLoss,
-  balanceSheet,
-  dayBook,
-};
+export { caneReport, productionReport, inventoryReport, purchaseReport, salesReport, financeReport, payrollReport, qualityReport, maintenanceReport, statutoryRegister, trialBalance, profitAndLoss, balanceSheet, dayBook };

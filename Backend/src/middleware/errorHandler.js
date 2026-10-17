@@ -2,8 +2,8 @@
  * Central error handler. Mongoose and body-parser failures are normalised into
  * ApiError responses so clients always receive `{ success: false, error }`.
  */
-const ApiError = require('../utils/ApiError');
-const env = require('../config/env');
+import ApiError from '../utils/ApiError.js';
+import 'dotenv/config';
 
 function notFoundHandler(req, _res, next) {
   next(ApiError.notFound(`Route not found: ${req.method} ${req.originalUrl}`));
@@ -38,10 +38,10 @@ function errorHandler(err, req, res, _next) {
   res.status(statusCode).json({
     success: false,
     error: {
-      message: isServerError && env.nodeEnv === 'production' ? 'Internal server error' : error.message,
+      message: isServerError && process.env.NODE_ENV === 'production' ? 'Internal server error' : error.message,
       ...(error.details ? { details: error.details } : {}),
     },
   });
 }
 
-module.exports = { errorHandler, notFoundHandler };
+export { errorHandler, notFoundHandler };

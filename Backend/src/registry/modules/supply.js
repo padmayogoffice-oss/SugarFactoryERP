@@ -4,9 +4,9 @@
  * Procurement documents (requisition through GRN and returns) feed the stores
  * stock ledger, which in turn supplies production and maintenance consumption.
  */
-const { f, FIELD_TYPES: T } = require('../fields');
-const { sub, mod } = require('../helpers');
-const { STATUS, DOC_STATUS, PAYMENT_STATUS, UOM_OPTIONS } = require('../constants');
+import { f, FIELD_TYPES as T } from '../fields.js';
+import { sub, mod } from '../helpers.js';
+import { STATUS, DOC_STATUS, PAYMENT_STATUS, UOM_OPTIONS } from '../constants.js';
 
 const notes = f('remarks', 'Remarks', T.TEXT, { inList: false });
 // Document totals are always derived by the backend, so they are read-only in forms.
@@ -238,4 +238,4 @@ const stores = mod('stores', 'Stores & Inventory', {
   ],
 });
 
-module.exports = [procurement, stores];
+export default [procurement, stores];

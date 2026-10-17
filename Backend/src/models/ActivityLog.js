@@ -2,7 +2,7 @@
  * Audit trail of user actions. Rows are append-only and are written by the
  * auditLog middleware after a successful write request.
  */
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const activityLogSchema = new mongoose.Schema(
   {
@@ -27,4 +27,4 @@ const activityLogSchema = new mongoose.Schema(
 
 activityLogSchema.index({ createdAt: -1 });
 
-module.exports = mongoose.model('ActivityLog', activityLogSchema);
+export default mongoose.model('ActivityLog', activityLogSchema);

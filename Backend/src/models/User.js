@@ -3,9 +3,9 @@
  * excluded from queries by default (`select: false`) and stripped on serialisation.
  * Lockout and password-change timestamps back the auth middleware checks.
  */
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const env = require('../config/env');
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+import 'dotenv/config';
 
 const userSchema = new mongoose.Schema(
   {
@@ -35,7 +35,7 @@ userSchema.virtual('fullName').get(function fullName() {
 });
 
 userSchema.methods.setPassword = async function setPassword(plainPassword) {
-  this.passwordHash = await bcrypt.hash(plainPassword, env.bcryptRounds);
+  this.passwordHash = await bcrypt.hash(plainPassword, Number(process.env.BCRYPT_ROUNDS || 12));
   // Stamped so the auth middleware can invalidate tokens issued before the change.
   this.passwordChangedAt = new Date();
 };
@@ -59,4 +59,4 @@ userSchema.set('toJSON', {
   },
 });
 
-module.exports = mongoose.model('User', userSchema);
+export default mongoose.model('User', userSchema);

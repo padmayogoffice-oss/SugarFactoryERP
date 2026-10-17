@@ -3,13 +3,14 @@
  * gated by the permission declared for that page in the module registry, so
  * adding a report page automatically secures its endpoint.
  */
-const express = require('express');
-const asyncHandler = require('../utils/asyncHandler');
+import express from 'express';
+import asyncHandler from '../utils/asyncHandler.js';
 
-const { ok } = require('../utils/apiResponse');
-const { authenticate, authorize } = require('../middleware/auth');
-const reportService = require('../services/reportService');
-const { getModule } = require('../registry');
+import { ok } from '../utils/apiResponse.js';
+import { authenticate, authorize } from '../middleware/auth.js';
+import * as reportService from '../services/reportService.js';
+import { getModule } from '../registry/index.js';
+import { hasPermission } from '../services/permissionService.js';
 
 const router = express.Router();
 
@@ -45,7 +46,6 @@ for (const [key, handler] of Object.entries(FINANCE_STATEMENTS)) {
 /** Metadata for the report pages the caller can open, used by the frontend. */
 router.get('/meta', authenticate, asyncHandler(async (req, res) => {
   const permissions = req.auth.permissions;
-  const { hasPermission } = require('../services/permissionService');
   const reportsModule = getModule('reports');
   const financeModule = getModule('finance');
 
@@ -57,4 +57,4 @@ router.get('/meta', authenticate, asyncHandler(async (req, res) => {
   return ok(res, pages);
 }));
 
-module.exports = router;
+export default router;

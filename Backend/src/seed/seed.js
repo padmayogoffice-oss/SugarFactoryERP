@@ -3,14 +3,16 @@
  * registry-driven demo records. Idempotent: roles and the admin are upserted, so
  * re-running never duplicates them.
  */
-const env = require('../config/env');
-const { connectDatabase, disconnectDatabase } = require('../config/database');
-const Role = require('../models/Role');
-const User = require('../models/User');
-const { buildResourceModels } = require('../models/resourceModel');
-const { permissionCatalog } = require('../registry');
-const { ROLE_TEMPLATES, expandPermissions } = require('./roles');
-const { seedDemoData } = require('./demoData');
+import 'dotenv/config';
+import mongoose from 'mongoose';
+import connectDB from '../config/connectDB.js';
+import Role from '../models/Role.js';
+import RefreshToken from '../models/RefreshToken.js';
+import User from '../models/User.js';
+import { buildResourceModels } from '../models/resourceModel.js';
+import { permissionCatalog } from '../registry/index.js';
+import { ROLE_TEMPLATES, expandPermissions } from './roles.js';
+import { seedDemoData } from './demoData.js';
 
 async function seedRoles() {
   const results = [];
@@ -36,54 +38,65 @@ async function seedRoles() {
 }
 
 async function seedSuperAdmin() {
-  const email = env.seed.superAdminEmail.toLowerCase();
-  const existing = await User.findOne({ email });
+  const email = (process.env.SEED_SUPER_ADMIN_EMAIL || 'admin@sugarfactory.com').toLowerCase();
+  let user = await User.findOne({ email }).select('+passwordHash');
+  const created = !user;
 
-  if (existing) {
-    existing.isSuperAdmin = true;
-    existing.status = 'active';
-    await existing.save();
-    return { email, created: false };
+  if (!user) {
+    user = new User({
+      employeeCode: 'EMP0001',
+      firstName: 'Super',
+      lastName: 'Admin',
+      email,
+      isSuperAdmin: true,
+      status: 'active',
+      remarks: 'Seeded super administrator account',
+    });
   }
 
-  const user = new User({
-    employeeCode: 'EMP0001',
-    firstName: 'Super',
-    lastName: 'Admin',
-    email,
-    isSuperAdmin: true,
-    status: 'active',
-    remarks: 'Seeded super administrator account',
-  });
-  await user.setPassword(env.seed.superAdminPassword);
+  user.isSuperAdmin = true;
+  user.status = 'active';
+  user.failedLoginAttempts = 0;
+  user.lockedUntil = null;
+  await user.setPassword(process.env.SEED_SUPER_ADMIN_PASSWORD || 'Admin@12345');
   await user.save();
+  await RefreshToken.updateMany(
+    { user: user._id, revokedAt: null },
+    { $set: { revokedAt: new Date() } },
+  );
 
-  return { email, created: true };
+  return { email, created };
 }
 
 async function run() {
-  await connectDatabase();
+  await connectDB();
+  const adminOnly = process.argv.includes('--admin-only');
 
-  console.log(`Registering ${permissionCatalog.length} permissions across the module registry...`);
-  const roles = await seedRoles();
-  for (const role of roles) {
-    console.log(`  role ${role.code.padEnd(24)} ${role.permissions === 1 ? 'all permissions' : `${role.permissions} permissions`}`);
+  if (!adminOnly) {
+    console.log(`Registering ${permissionCatalog.length} permissions across the module registry...`);
+    const roles = await seedRoles();
+    for (const role of roles) {
+      console.log(`  role ${role.code.padEnd(24)} ${role.permissions === 1 ? 'all permissions' : `${role.permissions} permissions`}`);
+    }
   }
 
   const admin = await seedSuperAdmin();
-  console.log(`Super admin ${admin.email} ${admin.created ? 'created' : 'already existed (updated)'}`);
+  console.log(`Super admin ${admin.email} ${admin.created ? 'created' : 'updated'}; seed credentials are active`);
 
-  const resources = buildResourceModels();
-  await seedDemoData(resources, { recordsPerSubmodule: 4 });
+  if (!adminOnly) {
+    const resources = buildResourceModels();
+    await seedDemoData(resources, { recordsPerSubmodule: 4 });
+  }
 
-  console.log('\nSeed complete.');
-  console.log(`Login with: ${env.seed.superAdminEmail} / ${env.seed.superAdminPassword}`);
+  console.log(adminOnly ? '\nSuper admin setup complete.' : '\nSeed complete.');
+  console.log(`Login email: ${process.env.SEED_SUPER_ADMIN_EMAIL || 'admin@sugarfactory.com'}`);
+  console.log('Login password: SEED_SUPER_ADMIN_PASSWORD (defaults to Admin@12345)');
 
-  await disconnectDatabase();
+  await mongoose.disconnect();
 }
 
 run().catch(async (error) => {
   console.error('Seed failed:', error);
-  await disconnectDatabase().catch(() => {});
+  await mongoose.disconnect().catch(() => {});
   process.exit(1);
 });

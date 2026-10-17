@@ -51,4 +51,4 @@ function buildListQuery(req, { searchableFields = [], defaultSort = '-createdAt'
   return { page, limit, skip: (page - 1) * limit, filter, sort };
 }
 
-module.exports = { ok, created, paginated, buildListQuery, escapeRegex };
+export { ok, created, paginated, buildListQuery, escapeRegex };

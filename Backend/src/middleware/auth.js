@@ -6,11 +6,11 @@
  * generated resource route is wrapped in both, so the API — not the UI — is the
  * enforcement point for access control.
  */
-const User = require('../models/User');
-const ApiError = require('../utils/ApiError');
-const asyncHandler = require('../utils/asyncHandler');
-const { verifyAccessToken } = require('../services/tokenService');
-const { resolvePermissions, hasPermission } = require('../services/permissionService');
+import User from '../models/User.js';
+import ApiError from '../utils/ApiError.js';
+import asyncHandler from '../utils/asyncHandler.js';
+import { verifyAccessToken } from '../services/tokenService.js';
+import { resolvePermissions, hasPermission } from '../services/permissionService.js';
 
 function extractBearerToken(req) {
   const header = req.headers.authorization || '';
@@ -63,4 +63,4 @@ function authorize(required) {
   };
 }
 
-module.exports = { authenticate, authorize, extractBearerToken };
+export { authenticate, authorize, extractBearerToken };

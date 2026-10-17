@@ -6,12 +6,13 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "seed": "node src/seed/seed.js",
+    "seed:admin": "node src/seed/seed.js --admin-only",
     "test": "node --test tests/*.test.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "description": "",
   "dependencies": {
     "bcryptjs": "^3.0.3",

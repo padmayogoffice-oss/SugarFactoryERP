@@ -5,10 +5,10 @@
  * module/submodule key, and every write is audited. This one factory backs all
  * 88 generated resources, so access control cannot be forgotten on a new one.
  */
-const express = require('express');
-const { createResourceController } = require('../controllers/resourceController');
-const { authenticate, authorize } = require('../middleware/auth');
-const { auditLog } = require('../middleware/auditLog');
+import express from 'express';
+import { createResourceController } from '../controllers/resourceController.js';
+import { authenticate, authorize } from '../middleware/auth.js';
+import { auditLog } from '../middleware/auditLog.js';
 
 /**
  * Builds a router with the standard REST surface for one registry submodule:
@@ -40,4 +40,4 @@ function createResourceRouter({ model, submodule, module: moduleDef }) {
   return router;
 }
 
-module.exports = { createResourceRouter };
+export { createResourceRouter };

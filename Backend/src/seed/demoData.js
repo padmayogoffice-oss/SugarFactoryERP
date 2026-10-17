@@ -3,7 +3,7 @@
  * plausible records per submodule, resolving reference fields to already-seeded
  * documents so the UI has linked data to display.
  */
-const { modules } = require('../registry');
+import { modules } from '../registry/index.js';
 
 /**
  * Generates a realistic value for a field definition so seeded records exercise
@@ -125,4 +125,4 @@ async function seedDemoData(resources, { recordsPerSubmodule = 4 } = {}) {
   return created;
 }
 
-module.exports = { seedDemoData };
+export { seedDemoData };

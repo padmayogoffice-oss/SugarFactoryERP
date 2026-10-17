@@ -3,7 +3,7 @@
  * patterns; `expandPermissions` turns those patterns into concrete permission
  * keys against the registry so role grants stay in step with the module tree.
  */
-const { permissionCatalog, modules } = require('../registry');
+import { permissionCatalog, modules } from '../registry/index.js';
 
 /**
  * Role templates. Permissions are expressed as `<module>:<submodule>:<action>`
@@ -162,4 +162,4 @@ function expandPermissions(permissions) {
   return [...expanded];
 }
 
-module.exports = { ROLE_TEMPLATES, expandPermissions };
+export { ROLE_TEMPLATES, expandPermissions };

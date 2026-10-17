@@ -6,9 +6,9 @@
  * turns these into Mongoose paths, validation and client schemas, and the
  * frontend renders forms and tables from the same metadata.
  */
-const { f, FIELD_TYPES: T } = require('../fields');
-const { sub, mod } = require('../helpers');
-const { STATUS, SEASON, GENDERS, PAYMENT_MODES } = require('../constants');
+import { f, FIELD_TYPES as T } from '../fields.js';
+import { sub, mod } from '../helpers.js';
+import { STATUS, SEASON, GENDERS, PAYMENT_MODES } from '../constants.js';
 
 // Shared free-text field reused across most submodules to avoid repetition.
 const notes = f('remarks', 'Remarks', T.TEXT, { inList: false });
@@ -343,4 +343,4 @@ const settings = mod('settings', 'System Settings', {
   ],
 });
 
-module.exports = [organization, access, masters, settings];
+export default [organization, access, masters, settings];
