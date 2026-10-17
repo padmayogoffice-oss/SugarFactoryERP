@@ -1,3 +1,7 @@
+/**
+ * Shared UI primitives (card, alert, spinner, stat tile, bar list, empty state)
+ * used across every screen to keep spacing and styling consistent.
+ */
 export function Spinner({ label = 'Loading…' }) {
   return (
     <div className="flex items-center justify-center gap-3 py-16 text-slate-500">

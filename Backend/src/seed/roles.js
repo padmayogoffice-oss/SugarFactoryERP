@@ -1,3 +1,8 @@
+/**
+ * Role templates seeded into the database. Each template lists permission
+ * patterns; `expandPermissions` turns those patterns into concrete permission
+ * keys against the registry so role grants stay in step with the module tree.
+ */
 const { permissionCatalog, modules } = require('../registry');
 
 /**

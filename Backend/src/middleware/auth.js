@@ -1,3 +1,11 @@
+/**
+ * Authentication and authorisation middleware.
+ *
+ * `authenticate` turns a bearer token into `req.user` + `req.auth`;
+ * `authorize` then gates a route on the permission keys it requires. Every
+ * generated resource route is wrapped in both, so the API — not the UI — is the
+ * enforcement point for access control.
+ */
 const User = require('../models/User');
 const ApiError = require('../utils/ApiError');
 const asyncHandler = require('../utils/asyncHandler');
@@ -46,6 +54,7 @@ function authorize(required) {
   const requirements = Array.isArray(required) ? required : [required];
   return (req, _res, next) => {
     const permissions = req.auth?.permissions;
+    // Any one of the listed permissions is sufficient (used for shared pages).
     const allowed = requirements.some((requirement) => hasPermission(permissions, requirement));
     if (!allowed) {
       return next(ApiError.forbidden(`Missing permission: ${requirements.join(' or ')}`));

@@ -1,3 +1,7 @@
+/**
+ * Login screen. Submits credentials through the auth context and surfaces
+ * validation or lockout errors returned by the API.
+ */
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'

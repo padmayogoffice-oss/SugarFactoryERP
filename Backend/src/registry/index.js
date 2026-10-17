@@ -1,3 +1,12 @@
+/**
+ * Registry aggregator — the single source of truth for the whole application.
+ *
+ * Module definitions from `./modules/*` are concatenated and sorted once here.
+ * From this list the backend derives Mongoose models, CRUD routers, the
+ * permission catalogue and the navigation tree, and the frontend derives its
+ * sidebar, router and generic list/form screens. Adding a submodule here is
+ * therefore enough to make it appear end to end.
+ */
 const coreModules = require('./modules/core');
 const operationsModules = require('./modules/operations');
 const supplyModules = require('./modules/supply');
@@ -20,6 +29,8 @@ const permissionCatalog = buildPermissionCatalog(modules);
 const submoduleIndex = new Map();
 for (const moduleDef of modules) {
   for (const submodule of moduleDef.submodules) {
+    // Keys double as URL segments, model names and permission prefixes, so a
+    // collision would silently route two resources to one model.
     if (submoduleIndex.has(submodule.key)) {
       throw new Error(`Duplicate submodule key "${submodule.key}" found in module registry`);
     }

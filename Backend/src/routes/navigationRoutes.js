@@ -1,3 +1,8 @@
+/**
+ * Navigation endpoint. Returns only the modules, submodules and report pages the
+ * caller may access, which the frontend uses to build its sidebar and routes so
+ * the UI can never advertise a page the API would reject.
+ */
 const express = require('express');
 const asyncHandler = require('../utils/asyncHandler');
 const { ok } = require('../utils/apiResponse');

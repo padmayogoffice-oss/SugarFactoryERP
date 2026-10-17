@@ -1,3 +1,8 @@
+/**
+ * Shared option lists for registry select fields. Keeping them here means a
+ * value like a sugar grade or GST rate is defined once and reused by every
+ * module that needs it.
+ */
 const STATUS = ['active', 'inactive'];
 const APPROVAL_STATUS = ['draft', 'pending', 'approved', 'rejected', 'cancelled'];
 const DOC_STATUS = ['draft', 'submitted', 'approved', 'posted', 'closed', 'cancelled'];

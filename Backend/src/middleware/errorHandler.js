@@ -1,3 +1,7 @@
+/**
+ * Central error handler. Mongoose and body-parser failures are normalised into
+ * ApiError responses so clients always receive `{ success: false, error }`.
+ */
 const ApiError = require('../utils/ApiError');
 const env = require('../config/env');
 

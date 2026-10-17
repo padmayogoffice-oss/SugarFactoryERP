@@ -1,3 +1,11 @@
+/**
+ * Commercial registry modules: Sales & Distribution, Quality Control, Plant
+ * Maintenance and Finance & Accounts.
+ *
+ * Sales drives dispatch and invoicing, quality gates both incoming cane and
+ * outgoing sugar, maintenance tracks plant availability, and finance holds the
+ * chart of accounts, vouchers and statements.
+ */
 const { f, FIELD_TYPES: T } = require('../fields');
 const { sub, mod } = require('../helpers');
 const { STATUS, DOC_STATUS, PAYMENT_STATUS, SHIFTS, UOM_OPTIONS, SUGAR_GRADES, PAYMENT_MODES } = require('../constants');

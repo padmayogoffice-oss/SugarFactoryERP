@@ -1,3 +1,8 @@
+/**
+ * Dashboard. KPI tiles, season production totals, trend charts and the recent
+ * activity feed are each rendered only when the API returned them, which happens
+ * only when the caller holds the matching permission.
+ */
 import { useEffect, useState } from 'react'
 import { dashboardApi } from '../api/endpoints'
 import { apiError } from '../api/client'

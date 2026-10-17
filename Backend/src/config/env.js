@@ -1,3 +1,7 @@
+/**
+ * Environment configuration. Values come from `Backend/.env` (never committed);
+ * secrets have development fallbacks but production refuses to start with them.
+ */
 require('dotenv').config();
 
 const required = (key, fallback) => {

@@ -1,3 +1,7 @@
+/**
+ * Users screen. Manages application accounts and their role assignments, with
+ * password handling delegated to the backend and the super admin shown explicitly.
+ */
 import { useCallback, useEffect, useState } from 'react'
 import { accessApi } from '../../api/endpoints'
 import { apiError } from '../../api/client'

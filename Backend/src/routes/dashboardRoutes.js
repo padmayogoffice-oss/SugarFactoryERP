@@ -1,3 +1,8 @@
+/**
+ * Dashboard routes. Each KPI card, chart and the activity feed is included only
+ * when the caller holds the matching permission, so a store keeper sees stock
+ * figures but never finance totals.
+ */
 const express = require('express');
 const asyncHandler = require('../utils/asyncHandler');
 const { ok } = require('../utils/apiResponse');

@@ -1,3 +1,7 @@
+/**
+ * Activity log viewer. Read-only audit trail with search, filters and pagination
+ * over the actions recorded by the backend audit middleware.
+ */
 import { useCallback, useEffect, useState } from 'react'
 import { accessApi } from '../../api/endpoints'
 import { apiError } from '../../api/client'

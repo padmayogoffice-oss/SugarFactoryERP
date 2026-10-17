@@ -1,3 +1,7 @@
+/**
+ * MongoDB connection lifecycle. `strictQuery` is on so unknown query fields are
+ * rejected rather than silently ignored.
+ */
 const mongoose = require('mongoose');
 const env = require('./env');
 

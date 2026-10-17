@@ -1,3 +1,8 @@
+/**
+ * Registry-driven demo data. Walks the registry and generates a handful of
+ * plausible records per submodule, resolving reference fields to already-seeded
+ * documents so the UI has linked data to display.
+ */
 const { modules } = require('../registry');
 
 /**

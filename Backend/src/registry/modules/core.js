@@ -1,7 +1,16 @@
+/**
+ * Core registry modules: Organization & Registration, Users & Access Control,
+ * Master Data and System Settings.
+ *
+ * Every field is declared once via `f(name, label, type, options)`; the backend
+ * turns these into Mongoose paths, validation and client schemas, and the
+ * frontend renders forms and tables from the same metadata.
+ */
 const { f, FIELD_TYPES: T } = require('../fields');
 const { sub, mod } = require('../helpers');
 const { STATUS, SEASON, GENDERS, PAYMENT_MODES } = require('../constants');
 
+// Shared free-text field reused across most submodules to avoid repetition.
 const notes = f('remarks', 'Remarks', T.TEXT, { inList: false });
 
 const organization = mod('organization', 'Organization & Registration', {
@@ -109,6 +118,9 @@ const access = mod('access', 'Users & Access Control', {
   icon: 'shield',
   order: 2,
   description: 'Role based access control: users, roles and permission assignment.',
+  // No CRUD router is generated for these submodules; routes/accessRoutes.js
+  // owns them because user and role writes need password hashing and
+  // permission validation that the generic controller cannot express.
   submodules: [
     sub('user', 'Users', [
       f('employeeCode', 'Employee Code', T.STRING, { required: true, unique: true }),
@@ -134,6 +146,8 @@ const access = mod('access', 'Users & Access Control', {
     ], { description: 'Roles bundle permissions; assign roles to users.' }),
   ],
   pages: [
+    // These are report-style pages but have no /api/reports handler; the
+    // frontend renders them from dedicated access endpoints instead.
     { key: 'permission', name: 'Permission Catalog', icon: 'key', description: 'Full list of available permissions.' },
     { key: 'activityLog', name: 'Activity Log', icon: 'history', description: 'Audit trail of user actions.' },
   ],

@@ -1,3 +1,10 @@
+/**
+ * Generic REST router factory for registry submodules.
+ *
+ * Every route is guarded by `authenticate` and a permission derived from the
+ * module/submodule key, and every write is audited. This one factory backs all
+ * 88 generated resources, so access control cannot be forgotten on a new one.
+ */
 const express = require('express');
 const { createResourceController } = require('../controllers/resourceController');
 const { authenticate, authorize } = require('../middleware/auth');

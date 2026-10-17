@@ -1,3 +1,8 @@
+/**
+ * Aggregation helpers used by the dashboard and reports: counts, sums, grouped
+ * sums and date-bucketed trends. All accept a match filter so callers can scope
+ * a query to a season, a unit or a status.
+ */
 const mongoose = require('mongoose');
 
 function model(name) {

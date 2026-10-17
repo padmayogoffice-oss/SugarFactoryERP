@@ -1,3 +1,7 @@
+/**
+ * Typed HTTP error. Instances are recognised by the central error handler, which
+ * maps `statusCode` and `details` onto the JSON error envelope.
+ */
 class ApiError extends Error {
   constructor(statusCode, message, details) {
     super(message);

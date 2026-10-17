@@ -1,3 +1,8 @@
+/**
+ * Authenticated shell: persistent sidebar, top bar with breadcrumbs and the
+ * routed page content. Breadcrumb labels come from the navigation tree so they
+ * match the sidebar wording exactly.
+ */
 import { useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import Sidebar, { humanise } from './Sidebar'

@@ -1,3 +1,8 @@
+/**
+ * Generic CRUD controller for a registry submodule. Search, filter, pagination,
+ * reference population and unique-field handling all come from the submodule's
+ * registry metadata, so one implementation serves every resource.
+ */
 const mongoose = require('mongoose');
 const ApiError = require('../utils/ApiError');
 const asyncHandler = require('../utils/asyncHandler');

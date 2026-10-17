@@ -1,3 +1,11 @@
+/**
+ * Axios client shared by every API wrapper.
+ *
+ * It attaches the access token to each request and transparently refreshes an
+ * expired session: a single refresh call is shared across concurrent 401s so
+ * parallel requests cannot each rotate the token, and an unrecoverable failure
+ * clears the stored session and redirects to the login page.
+ */
 import axios from 'axios'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api'

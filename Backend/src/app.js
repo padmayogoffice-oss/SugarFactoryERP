@@ -1,3 +1,7 @@
+/**
+ * Express application factory. Kept separate from server.js so tests can build
+ * an app instance without binding a port.
+ */
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -29,12 +33,15 @@ function createApp() {
     app.use(morgan(env.nodeEnv === 'production' ? 'combined' : 'dev'));
   }
 
+  // Health probe doubles as a registry sanity check: the module and permission
+  // counts should always match the compiled registry.
   app.get('/health', (_req, res) => {
     res.json({ success: true, data: { status: 'ok', modules: modules.length, permissions: permissionCatalog.length } });
   });
 
   app.use('/api', buildApiRouter());
 
+  // Not-found must precede the error handler so thrown ApiErrors land in one place.
   app.use(notFoundHandler);
   app.use(errorHandler);
 

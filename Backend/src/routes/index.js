@@ -1,3 +1,9 @@
+/**
+ * API router composition. Hand-written routers are mounted first for the
+ * special-cased areas (auth, access control, navigation, dashboard, reports);
+ * then a fully permission-checked CRUD router is generated for every remaining
+ * registry submodule.
+ */
 const express = require('express');
 const { buildResourceModels } = require('../models/resourceModel');
 const { modules } = require('../registry');

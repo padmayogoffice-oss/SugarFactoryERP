@@ -1,3 +1,9 @@
+/**
+ * People registry modules: Human Resources & Payroll and Reports & Analytics.
+ *
+ * `reports` declares report-style pages only (no submodules); each page key maps
+ * to a handler in services/reportService.js and renders generically on the client.
+ */
 const { f, FIELD_TYPES: T } = require('../fields');
 const { sub, mod } = require('../helpers');
 const { STATUS, GENDERS, PAYMENT_MODES, SHIFTS } = require('../constants');

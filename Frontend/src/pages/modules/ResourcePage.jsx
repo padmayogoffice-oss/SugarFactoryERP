@@ -1,3 +1,9 @@
+/**
+ * Generic list screen for any registry submodule: searchable, filterable and
+ * paginated table plus create/edit/delete actions. Columns, form fields and
+ * permission gates all come from the submodule's registry metadata, so one
+ * component serves every generated resource.
+ */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { resourceApi } from '../../api/endpoints'

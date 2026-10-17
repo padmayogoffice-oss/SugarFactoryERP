@@ -1,3 +1,8 @@
+/**
+ * Typed endpoint wrappers. Every call unwraps the `{ success, data }` envelope so
+ * callers deal in plain payloads, and `resourceApi` builds a CRUD client for any
+ * registry submodule from its module/submodule keys.
+ */
 import api from './client'
 
 /** Thin wrappers around the REST surface, one per backend concern. */

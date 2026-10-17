@@ -1,3 +1,9 @@
+/**
+ * Users & Access Control routes. These are hand-written rather than generated
+ * because user and role writes need password hashing, role validation and
+ * self-protection rules (for example, you cannot delete your own account or the
+ * built-in Super Admin role).
+ */
 const express = require('express');
 const mongoose = require('mongoose');
 const asyncHandler = require('../utils/asyncHandler');

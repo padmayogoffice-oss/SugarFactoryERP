@@ -1,3 +1,9 @@
+/**
+ * Report aggregations. Each exported function backs one report page and returns
+ * `{ columns, rows, summary, charts? }`, which the frontend renders generically.
+ * Adding a report therefore needs only a new function here plus a page entry in
+ * the module registry.
+ */
 const mongoose = require('mongoose');
 const ApiError = require('../utils/ApiError');
 

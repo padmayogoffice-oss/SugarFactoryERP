@@ -1,3 +1,8 @@
+/**
+ * Refresh token service. Access tokens are short-lived JWTs; refresh tokens are
+ * opaque random strings stored only as hashes. Rotation revokes the old token on
+ * every use, and replaying a revoked token revokes the user's whole session set.
+ */
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const env = require('../config/env');

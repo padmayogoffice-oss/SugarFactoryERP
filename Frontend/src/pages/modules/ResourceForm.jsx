@@ -1,3 +1,7 @@
+/**
+ * Generic create/edit form for a registry submodule. Fields, validation rules
+ * and reference dropdowns are generated from the submodule's field metadata.
+ */
 import { useMemo, useState } from 'react'
 import { Alert } from '../../components/ui'
 import { apiError } from '../../api/client'

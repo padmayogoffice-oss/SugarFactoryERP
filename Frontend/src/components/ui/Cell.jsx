@@ -1,3 +1,8 @@
+/**
+ * Table cell renderer and value formatters. Formats a value according to its
+ * registry field type (date, currency, percent, reference, badge) so list tables
+ * stay consistent without per-module code.
+ */
 import StatusBadge from './StatusBadge'
 
 export function formatValue(value) {

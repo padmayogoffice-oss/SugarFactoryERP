@@ -1,3 +1,8 @@
+/**
+ * Process entry point: connects to MongoDB, starts the HTTP server and wires
+ * graceful shutdown so in-flight requests finish and the DB connection closes
+ * cleanly on SIGINT/SIGTERM.
+ */
 const env = require('./config/env');
 const { connectDatabase, disconnectDatabase } = require('./config/database');
 const { createApp } = require('./app');
@@ -16,6 +21,7 @@ async function start() {
       await disconnectDatabase();
       process.exit(0);
     });
+    // Force-exit if connections refuse to drain, so a stuck socket cannot hang the process.
     setTimeout(() => process.exit(1), 10000).unref();
   };
 

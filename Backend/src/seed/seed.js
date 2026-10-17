@@ -1,3 +1,8 @@
+/**
+ * Database seeder. Creates the role templates, the super admin account and
+ * registry-driven demo records. Idempotent: roles and the admin are upserted, so
+ * re-running never duplicates them.
+ */
 const env = require('../config/env');
 const { connectDatabase, disconnectDatabase } = require('../config/database');
 const Role = require('../models/Role');

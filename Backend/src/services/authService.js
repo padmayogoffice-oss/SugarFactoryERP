@@ -1,3 +1,8 @@
+/**
+ * Authentication service: login, registration, refresh, logout and password
+ * change. Failed logins increment a lockout counter, and every credential change
+ * revokes the user's refresh tokens.
+ */
 const User = require('../models/User');
 const Role = require('../models/Role');
 const ApiError = require('../utils/ApiError');

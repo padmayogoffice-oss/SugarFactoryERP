@@ -1,3 +1,8 @@
+/**
+ * Generic model factory. Builds a Mongoose model for every registry submodule
+ * that has no hand-written model, keyed by the registry `ref` name so
+ * `populate()` resolves references across modules.
+ */
 const mongoose = require('mongoose');
 const { toMongooseType } = require('../registry/fields');
 const { modules } = require('../registry');

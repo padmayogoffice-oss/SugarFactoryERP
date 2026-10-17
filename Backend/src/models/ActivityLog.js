@@ -1,3 +1,7 @@
+/**
+ * Audit trail of user actions. Rows are append-only and are written by the
+ * auditLog middleware after a successful write request.
+ */
 const mongoose = require('mongoose');
 
 const activityLogSchema = new mongoose.Schema(

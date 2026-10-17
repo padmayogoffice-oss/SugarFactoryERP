@@ -1,3 +1,8 @@
+/**
+ * Refresh token model. Only the hash of each token is persisted so a database
+ * leak cannot be replayed. `replacedByHash` supports rotation, and the TTL index
+ * lets MongoDB expire stale rows automatically.
+ */
 const mongoose = require('mongoose');
 
 const refreshTokenSchema = new mongoose.Schema(

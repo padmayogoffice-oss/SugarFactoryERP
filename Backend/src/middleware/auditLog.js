@@ -1,3 +1,8 @@
+/**
+ * Audit trail middleware. It hooks `res.on('finish')` so a log entry is written
+ * only after the response succeeds, and it records the actor, the resource and
+ * the request metadata for every write operation.
+ */
 const ActivityLog = require('../models/ActivityLog');
 
 const WRITE_ACTIONS = { POST: 'create', PUT: 'update', PATCH: 'update', DELETE: 'delete' };

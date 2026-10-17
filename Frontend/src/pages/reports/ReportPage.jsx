@@ -1,3 +1,7 @@
+/**
+ * Generic report screen. Fetches a report by key and renders its columns, rows,
+ * summary tiles and optional charts, so a new backend report needs no new UI.
+ */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { reportApi } from '../../api/endpoints'

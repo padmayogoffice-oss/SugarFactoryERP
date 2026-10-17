@@ -1,3 +1,9 @@
+/**
+ * Permission resolution and checks. A permission is the three-part key
+ * `module:submodule:action`; either segment may be `*`, and the bare `*` grants
+ * everything. Wildcards are resolved here rather than stored expanded, so a role
+ * holding `stores:*:view` keeps working when new stores submodules are added.
+ */
 const Role = require('../models/Role');
 
 const WILDCARD = '*';

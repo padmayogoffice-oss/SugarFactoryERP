@@ -1,3 +1,8 @@
+/**
+ * Auth context. Owns the session, the permission list and the navigation tree,
+ * and exposes `can`/`canAny` for permission-aware rendering. The client-side
+ * checks only shape the UI; the API re-checks every request.
+ */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { authApi, navigationApi } from '../api/endpoints'
 import { tokenStore } from '../api/client'
@@ -10,6 +15,10 @@ export function AuthProvider({ children }) {
   const [navigation, setNavigation] = useState(null)
   const [loading, setLoading] = useState(Boolean(tokenStore.getAccess()))
 
+  /**
+   * Loads the current user together with the permission-filtered navigation in
+   * one step, so the session and the route table can never disagree.
+   */
   const loadSession = useCallback(async () => {
     const me = await authApi.me()
     const tree = await navigationApi.tree()

@@ -1,8 +1,15 @@
+/**
+ * Supply-chain registry modules: Procurement & Purchase and Stores & Inventory.
+ *
+ * Procurement documents (requisition through GRN and returns) feed the stores
+ * stock ledger, which in turn supplies production and maintenance consumption.
+ */
 const { f, FIELD_TYPES: T } = require('../fields');
 const { sub, mod } = require('../helpers');
 const { STATUS, DOC_STATUS, PAYMENT_STATUS, UOM_OPTIONS } = require('../constants');
 
 const notes = f('remarks', 'Remarks', T.TEXT, { inList: false });
+// Document totals are always derived by the backend, so they are read-only in forms.
 const amount = (name, label) => f(name, label, T.CURRENCY, { readOnly: true });
 
 const procurement = mod('procurement', 'Procurement & Purchase', {

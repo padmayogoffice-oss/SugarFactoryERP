@@ -1,3 +1,11 @@
+/**
+ * Application shell and router.
+ *
+ * The route table is not hand-written: it is generated from the caller's
+ * permission-filtered navigation tree, so a module the user cannot access has no
+ * route and cannot appear in the sidebar. Custom screens override the generic
+ * resource or report page for the few submodules that need bespoke UI.
+ */
 import { Navigate, Route, Routes } from 'react-router-dom'
 import AppLayout from './components/layout/AppLayout'
 import LoginPage from './pages/auth/LoginPage'

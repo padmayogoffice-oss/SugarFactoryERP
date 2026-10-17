@@ -1,3 +1,8 @@
+/**
+ * User account model. Passwords are stored only as a bcrypt hash and the hash is
+ * excluded from queries by default (`select: false`) and stripped on serialisation.
+ * Lockout and password-change timestamps back the auth middleware checks.
+ */
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const env = require('../config/env');
@@ -31,6 +36,7 @@ userSchema.virtual('fullName').get(function fullName() {
 
 userSchema.methods.setPassword = async function setPassword(plainPassword) {
   this.passwordHash = await bcrypt.hash(plainPassword, env.bcryptRounds);
+  // Stamped so the auth middleware can invalidate tokens issued before the change.
   this.passwordChangedAt = new Date();
 };
 

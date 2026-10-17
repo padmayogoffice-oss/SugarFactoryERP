@@ -1,3 +1,7 @@
+/**
+ * Role model. A role is a named bundle of permission keys; users receive the
+ * union of the permissions of all roles assigned to them.
+ */
 const mongoose = require('mongoose');
 
 /**

@@ -1,3 +1,8 @@
+/**
+ * Authentication routes. Credentials are validated here before reaching the
+ * service, login/register/change-password writes are audited, and refresh and
+ * logout stay unauthenticated because they operate on the refresh token itself.
+ */
 const express = require('express');
 const asyncHandler = require('../utils/asyncHandler');
 const { ok, created } = require('../utils/apiResponse');

@@ -1,3 +1,8 @@
+/**
+ * Sidebar navigation rendered from the permission-filtered navigation tree.
+ * Only modules, submodules and report pages the caller may open are shown, and
+ * `humanise` provides a readable fallback label for any unlabelled registry key.
+ */
 import { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'

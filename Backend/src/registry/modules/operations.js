@@ -1,3 +1,9 @@
+/**
+ * Operations registry modules: Cane Management and Production & Manufacturing.
+ *
+ * These carry the season-critical domain data — cane procurement and weighment
+ * feeding crushing, shift production and by-product recovery.
+ */
 const { f, FIELD_TYPES: T } = require('../fields');
 const { sub, mod } = require('../helpers');
 const { STATUS, APPROVAL_STATUS, DOC_STATUS, SEASON, SHIFTS } = require('../constants');

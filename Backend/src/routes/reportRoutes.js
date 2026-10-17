@@ -1,3 +1,8 @@
+/**
+ * Report routes. Each report page key maps to a handler in reportService and is
+ * gated by the permission declared for that page in the module registry, so
+ * adding a report page automatically secures its endpoint.
+ */
 const express = require('express');
 const asyncHandler = require('../utils/asyncHandler');
 

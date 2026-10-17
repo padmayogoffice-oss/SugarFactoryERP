@@ -1,3 +1,8 @@
+/**
+ * Roles screen. Lists roles with their granted-permission counts and provides an
+ * editor that assigns permissions from the grouped registry catalog (module ->
+ * submodule / report page -> action).
+ */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { accessApi } from '../../api/endpoints'
 import { apiError } from '../../api/client'
