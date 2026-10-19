@@ -4,7 +4,9 @@
  */
 import { useMemo, useState } from 'react'
 import { Alert } from '../../components/ui'
+import BilingualInput from '../../components/ui/BilingualInput'
 import { apiError } from '../../api/client'
+import { finalizeMarathi } from '../../lib/transliteration'
 
 /** Converts a stored value into the shape an <input> expects. */
 function toInputValue(field, value) {
@@ -38,8 +40,24 @@ function initialForm(submodule, record) {
     } else {
       state[field.name] = value
     }
+    // Marathi companion of a transliterable text field (stored as `<name>Mr`).
+    if (isBilingual(field)) state[field.marathiName] = record?.[field.marathiName] || ''
   }
   return state
+}
+
+/** Text fields flagged by the registry for English + Marathi entry. */
+function isBilingual(field) {
+  return Boolean(field.translit && field.marathiName) && (field.type === 'string' || field.type === 'text')
+}
+
+/** A stored Marathi value counts as "manual" so editing the English never silently overwrites it. */
+function initialManual(submodule, record) {
+  const manual = {}
+  for (const field of submodule.fields) {
+    if (isBilingual(field)) manual[field.name] = Boolean(record?.[field.marathiName])
+  }
+  return manual
 }
 
 /** Coerces form state into the JSON the API expects. */
@@ -59,6 +77,7 @@ function toPayload(submodule, form) {
     } else {
       payload[field.name] = value
     }
+    if (isBilingual(field)) payload[field.marathiName] = form[field.marathiName] || ''
   }
   return payload
 }
@@ -161,6 +180,7 @@ export default function ResourceForm({ submodule, record, refOptions = {}, onSub
   const [form, setForm] = useState(() => initialForm(submodule, record))
   const [error, setError] = useState(null)
   const [busy, setBusy] = useState(false)
+  const [manualMr, setManualMr] = useState(() => initialManual(submodule, record))
 
   const editableFields = useMemo(() => submodule.fields.filter((field) => !field.readOnly), [submodule])
 
@@ -169,7 +189,11 @@ export default function ResourceForm({ submodule, record, refOptions = {}, onSub
     setBusy(true)
     setError(null)
     try {
-      await onSubmit(toPayload(submodule, form))
+      // Make sure automatic Marathi values match the final English text before saving.
+      const bilingualNames = submodule.fields.filter(isBilingual).map((field) => field.name)
+      const finalForm = bilingualNames.length ? await finalizeMarathi(form, manualMr, bilingualNames) : form
+      if (finalForm !== form) setForm(finalForm)
+      await onSubmit(toPayload(submodule, finalForm))
     } catch (requestError) {
       setError(apiError(requestError))
     } finally {
@@ -191,7 +215,23 @@ export default function ResourceForm({ submodule, record, refOptions = {}, onSub
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {editableFields.map((field) => (
-          <div key={field.name} className={field.type === 'multiselect' || field.type === 'tags' || field.type === 'refs' ? 'sm:col-span-2' : ''}>
+          <div key={field.name} className={field.type === 'multiselect' || field.type === 'tags' || field.type === 'refs' || isBilingual(field) ? 'sm:col-span-2' : ''}>
+            {isBilingual(field) ? (
+              <BilingualInput
+                id={field.name}
+                label={field.label}
+                required={field.required}
+                unit={field.unit}
+                placeholder={field.placeholder || ''}
+                value={form[field.name]}
+                marathiValue={form[field.marathiName]}
+                manual={Boolean(manualMr[field.name])}
+                onChange={(value) => setForm((current) => ({ ...current, [field.name]: value }))}
+                onMarathiChange={(value) => setForm((current) => ({ ...current, [field.marathiName]: value }))}
+                onManualChange={(value) => setManualMr((current) => ({ ...current, [field.name]: value }))}
+              />
+            ) : (
+              <>
             {field.type !== 'boolean' && (
               <label className="label" htmlFor={field.name}>
                 {field.label}
@@ -205,6 +245,8 @@ export default function ResourceForm({ submodule, record, refOptions = {}, onSub
               options={refOptions[field.name] || []}
               onChange={(value) => setForm((current) => ({ ...current, [field.name]: value }))}
             />
+              </>
+            )}
             {field.help && <p className="mt-1 text-xs text-slate-400">{field.help}</p>}
           </div>
         ))}

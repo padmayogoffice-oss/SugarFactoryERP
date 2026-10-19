@@ -12,6 +12,9 @@ const userSchema = new mongoose.Schema(
     employeeCode: { type: String, required: true, unique: true, trim: true, uppercase: true },
     firstName: { type: String, required: true, trim: true },
     lastName: { type: String, default: '', trim: true },
+    // Optional Marathi (Devanagari) companions of the English name fields.
+    firstNameMr: { type: String, default: '', trim: true },
+    lastNameMr: { type: String, default: '', trim: true },
     email: { type: String, required: true, unique: true, trim: true, lowercase: true },
     phone: { type: String, default: '', trim: true },
     gender: { type: String, enum: ['Male', 'Female', 'Other', ''], default: '' },
@@ -26,6 +29,7 @@ const userSchema = new mongoose.Schema(
     lockedUntil: { type: Date, default: null },
     passwordChangedAt: { type: Date, default: null },
     remarks: { type: String, default: '' },
+    remarksMr: { type: String, default: '', trim: true },
   },
   { timestamps: true },
 );

@@ -14,6 +14,7 @@ import accessRoutes from './accessRoutes.js';
 import navigationRoutes from './navigationRoutes.js';
 import dashboardRoutes from './dashboardRoutes.js';
 import reportRoutes from './reportRoutes.js';
+import transliterationRoutes from './transliterationRoutes.js';
 
 /**
  * Mounts one router per registry submodule at `/api/<module>/<submodule>`.
@@ -29,6 +30,7 @@ function buildApiRouter() {
   api.use('/navigation', navigationRoutes);
   api.use('/dashboard', dashboardRoutes);
   api.use('/reports', reportRoutes);
+  api.use('/transliterate', transliterationRoutes);
 
   for (const moduleDef of modules) {
     if (moduleDef.key === 'access') continue; // handled by accessRoutes

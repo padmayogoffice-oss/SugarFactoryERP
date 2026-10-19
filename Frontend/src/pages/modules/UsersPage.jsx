@@ -7,9 +7,11 @@ import { accessApi } from '../../api/endpoints'
 import { apiError } from '../../api/client'
 import { Alert, Card, EmptyState, Modal, Pagination, Spinner } from '../../components/ui'
 import StatusBadge from '../../components/ui/StatusBadge'
+import BilingualInput from '../../components/ui/BilingualInput'
+import { finalizeMarathi } from '../../lib/transliteration'
 import { formatDate } from '../../components/ui/Cell'
 
-const EMPTY = { employeeCode: '', firstName: '', lastName: '', email: '', phone: '', password: '', status: 'active', roles: [] }
+const EMPTY = { employeeCode: '', firstName: '', firstNameMr: '', lastName: '', lastNameMr: '', email: '', phone: '', password: '', status: 'active', roles: [] }
 
 export default function UsersPage() {
   const [rows, setRows] = useState([])
@@ -22,6 +24,8 @@ export default function UsersPage() {
   const [roles, setRoles] = useState([])
   const [form, setForm] = useState(null)
   const [busy, setBusy] = useState(false)
+  // Which Marathi values were typed by hand (so the English field no longer overwrites them).
+  const [manualMr, setManualMr] = useState({})
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -52,7 +56,7 @@ export default function UsersPage() {
     setBusy(true)
     setError(null)
     try {
-      const payload = { ...form }
+      const payload = await finalizeMarathi(form, manualMr, ['firstName', 'lastName'])
       if (!payload.password) delete payload.password
       if (form.id) await accessApi.updateUser(form.id, payload)
       else await accessApi.createUser(payload)
@@ -94,7 +98,7 @@ export default function UsersPage() {
               setSearch(event.target.value)
             }}
           />
-          <button type="button" className="btn-primary" onClick={() => setForm({ ...EMPTY })}>+ New user</button>
+          <button type="button" className="btn-primary" onClick={() => { setManualMr({}); setForm({ ...EMPTY }) }}>+ New user</button>
         </div>
       </div>
 
@@ -138,19 +142,22 @@ export default function UsersPage() {
                         <button
                           type="button"
                           className="text-xs font-medium text-emerald-700 hover:underline"
-                          onClick={() =>
+                          onClick={() => {
+                            setManualMr({ firstName: Boolean(row.firstNameMr), lastName: Boolean(row.lastNameMr) })
                             setForm({
                               id: row._id,
                               employeeCode: row.employeeCode || '',
                               firstName: row.firstName || '',
+                              firstNameMr: row.firstNameMr || '',
                               lastName: row.lastName || '',
+                              lastNameMr: row.lastNameMr || '',
                               email: row.email || '',
                               phone: row.phone || '',
                               password: '',
                               status: row.status || 'active',
                               roles: (row.roles || []).map((role) => String(role._id || role.id)),
                             })
-                          }
+                          }}
                         >
                           Edit
                         </button>
@@ -180,13 +187,31 @@ export default function UsersPage() {
                 <label className="label" htmlFor="email">Email *</label>
                 <input id="email" type="email" className="input" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
               </div>
-              <div>
-                <label className="label" htmlFor="firstName">First name *</label>
-                <input id="firstName" className="input" required value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} />
+              <div className="sm:col-span-2">
+                <BilingualInput
+                  id="firstName"
+                  label="First name"
+                  required
+                  htmlRequired
+                  value={form.firstName}
+                  marathiValue={form.firstNameMr}
+                  manual={Boolean(manualMr.firstName)}
+                  onChange={(value) => setForm((current) => ({ ...current, firstName: value }))}
+                  onMarathiChange={(value) => setForm((current) => ({ ...current, firstNameMr: value }))}
+                  onManualChange={(value) => setManualMr((current) => ({ ...current, firstName: value }))}
+                />
               </div>
-              <div>
-                <label className="label" htmlFor="lastName">Last name</label>
-                <input id="lastName" className="input" value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} />
+              <div className="sm:col-span-2">
+                <BilingualInput
+                  id="lastName"
+                  label="Last name"
+                  value={form.lastName}
+                  marathiValue={form.lastNameMr}
+                  manual={Boolean(manualMr.lastName)}
+                  onChange={(value) => setForm((current) => ({ ...current, lastName: value }))}
+                  onMarathiChange={(value) => setForm((current) => ({ ...current, lastNameMr: value }))}
+                  onManualChange={(value) => setManualMr((current) => ({ ...current, lastName: value }))}
+                />
               </div>
               <div>
                 <label className="label" htmlFor="phone">Phone</label>

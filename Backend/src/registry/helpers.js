@@ -6,11 +6,18 @@
  * validation, and the frontend list/form pages.
  */
 
+import { annotateFields, marathiFieldName } from './transliteration.js';
+
 const DEFAULT_ACTIONS = ['view', 'create', 'update', 'delete'];
 
 const SEARCHABLE_TYPES = new Set(['string', 'text', 'email', 'phone']);
 
-function sub(key, name, fields, opts = {}) {
+function sub(key, name, rawFields, opts = {}) {
+  // Adds `translit` / `marathiName` to each field (on copies; see transliteration.js).
+  const fields = annotateFields(key, rawFields);
+  const defaultSearchable = fields.filter((field) => SEARCHABLE_TYPES.has(field.type)).map((field) => field.name);
+  // Marathi companions are searchable too, so records can be found by their Marathi text.
+  const marathiSearchable = fields.filter((field) => field.translit).map((field) => marathiFieldName(field.name));
   return {
     key,
     name,
@@ -18,9 +25,7 @@ function sub(key, name, fields, opts = {}) {
     icon: opts.icon || 'file',
     fields,
     actions: opts.actions || DEFAULT_ACTIONS,
-    searchable:
-      opts.searchable ||
-      fields.filter((field) => SEARCHABLE_TYPES.has(field.type)).map((field) => field.name),
+    searchable: [...(opts.searchable || defaultSearchable), ...marathiSearchable],
     filterable: opts.filterable || fields.filter((field) => field.type === 'select').map((field) => field.name),
     defaultSort: opts.defaultSort || '-createdAt',
     labelField: opts.labelField || fields.find((field) => SEARCHABLE_TYPES.has(field.type))?.name || 'name',

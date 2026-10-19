@@ -18,6 +18,10 @@ function buildSchema(submodule) {
   for (const field of submodule.fields) {
     if (field.readOnly) continue;
     definition[field.name] = toMongooseType(field);
+    // Optional Marathi companion of a transliterable text field (additive; never required).
+    if (field.translit && field.marathiName) {
+      definition[field.marathiName] = { type: String, trim: true, default: '' };
+    }
   }
 
   definition.createdBy = { type: mongoose.Schema.Types.ObjectId, ref: 'User' };
@@ -31,8 +35,10 @@ function buildSchema(submodule) {
 
   // `unique` fields already have an index; adding another would be a duplicate.
   const uniqueFields = new Set(submodule.fields.filter((field) => field.unique).map((field) => field.name));
+  // Marathi companions are searched with a regex, so extra indexes would not help.
+  const marathiFields = new Set(submodule.fields.filter((field) => field.translit).map((field) => field.marathiName));
   for (const field of submodule.searchable) {
-    if (uniqueFields.has(field)) continue;
+    if (uniqueFields.has(field) || marathiFields.has(field)) continue;
     schema.index({ [field]: 1 });
   }
 

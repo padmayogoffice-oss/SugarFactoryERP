@@ -20,7 +20,7 @@ import { validatePayload } from '../registry/fields.js';
 const router = express.Router();
 
 const PASSWORD_MIN_LENGTH = 8;
-const SAFE_USER_FIELDS = 'employeeCode firstName lastName email phone gender department designation roles isSuperAdmin status lastLoginAt createdAt updatedAt remarks';
+const SAFE_USER_FIELDS = 'employeeCode firstName lastName firstNameMr lastNameMr email phone gender department designation roles isSuperAdmin status lastLoginAt createdAt updatedAt remarks remarksMr';
 
 function publicUser(user) {
   const plain = user.toObject ? user.toObject({ virtuals: true }) : { ...user };
@@ -36,7 +36,7 @@ const userSubmodule = getSubmodule('user').submodule;
 
 router.get('/users', authenticate, authorize('access:user:view'), asyncHandler(async (req, res) => {
   const { page, limit, skip, filter, sort } = buildListQuery(req, {
-    searchableFields: ['employeeCode', 'firstName', 'lastName', 'email', 'phone'],
+    searchableFields: ['employeeCode', 'firstName', 'lastName', 'firstNameMr', 'lastNameMr', 'email', 'phone'],
     filterableFields: ['status', 'gender'],
     defaultSort: '-createdAt',
   });
@@ -44,7 +44,7 @@ router.get('/users', authenticate, authorize('access:user:view'), asyncHandler(a
   if (req.query.role && mongoose.isValidObjectId(req.query.role)) filter.roles = req.query.role;
   if (req.query.q) {
     const pattern = new RegExp(escapeRegex(req.query.q), 'i');
-    filter.$or = ['employeeCode', 'firstName', 'lastName', 'email', 'phone'].map((field) => ({ [field]: pattern }));
+    filter.$or = ['employeeCode', 'firstName', 'lastName', 'firstNameMr', 'lastNameMr', 'email', 'phone'].map((field) => ({ [field]: pattern }));
   }
 
   const [items, total] = await Promise.all([
@@ -144,7 +144,7 @@ router.delete('/users/:id', authenticate, authorize('access:user:delete'), audit
 
 router.get('/roles', authenticate, authorize('access:role:view'), asyncHandler(async (req, res) => {
   const { page, limit, skip, filter, sort } = buildListQuery(req, {
-    searchableFields: ['code', 'name', 'description'],
+    searchableFields: ['code', 'name', 'description', 'nameMr', 'descriptionMr'],
     filterableFields: ['status'],
     defaultSort: 'name',
   });
@@ -178,7 +178,7 @@ function assertValidPermissions(permissions) {
 }
 
 router.post('/roles', authenticate, authorize('access:role:create'), auditLog({ module: 'access', submodule: 'role' }), asyncHandler(async (req, res) => {
-  const { code, name, description, permissions, status } = req.body || {};
+  const { code, name, description, permissions, status, nameMr, descriptionMr } = req.body || {};
   if (!code) throw ApiError.badRequest('Role code is required');
   if (!name) throw ApiError.badRequest('Role name is required');
   assertValidPermissions(permissions || []);
@@ -190,6 +190,8 @@ router.post('/roles', authenticate, authorize('access:role:create'), auditLog({ 
     code: String(code).toUpperCase(),
     name,
     description: description || '',
+    nameMr: typeof nameMr === 'string' ? nameMr.trim() : '',
+    descriptionMr: typeof descriptionMr === 'string' ? descriptionMr.trim() : '',
     permissions: permissions || [],
     status: status || 'active',
   });
@@ -206,7 +208,7 @@ router.put('/roles/:id', authenticate, authorize('access:role:update'), auditLog
   const role = await Role.findById(req.params.id);
   if (!role) throw ApiError.notFound('Role not found');
 
-  const { name, description, permissions, status } = req.body || {};
+  const { name, description, permissions, status, nameMr, descriptionMr } = req.body || {};
   if (permissions !== undefined) {
     assertValidPermissions(permissions);
     if (role.isSystem && permissions.includes('*') === false) {
@@ -216,6 +218,8 @@ router.put('/roles/:id', authenticate, authorize('access:role:update'), auditLog
   }
   if (name !== undefined) role.name = name;
   if (description !== undefined) role.description = description;
+  if (typeof nameMr === 'string') role.nameMr = nameMr.trim();
+  if (typeof descriptionMr === 'string') role.descriptionMr = descriptionMr.trim();
   if (status !== undefined) {
     if (role.isSystem && status !== 'active') throw ApiError.forbidden('System roles cannot be deactivated');
     role.status = status;
