@@ -9,6 +9,9 @@
 
 import mongoose from 'mongoose';
 
+/** Upper bound for a stored Marathi companion value. */
+const MARATHI_MAX_LENGTH = 4000;
+
 const FIELD_TYPES = {
   STRING: 'string',
   TEXT: 'text',
@@ -187,13 +190,35 @@ function validatePayload(fields, payload, { partial = false } = {}) {
     result[field.name] = coerced;
   }
 
+  // Marathi companions (`<name>Mr`) of transliterable text fields. They are always
+  // optional free text, so they never affect required-field validation.
+  for (const field of fields) {
+    if (!field.translit || !field.marathiName) continue;
+    if (!Object.prototype.hasOwnProperty.call(payload, field.marathiName)) continue;
+    const raw = payload[field.marathiName];
+    if (raw === null || raw === undefined || raw === '') {
+      result[field.marathiName] = '';
+      continue;
+    }
+    if (typeof raw !== 'string') {
+      errors.push(`${field.label} (Marathi) must be text`);
+      continue;
+    }
+    const text = raw.trim();
+    if (text.length > MARATHI_MAX_LENGTH) {
+      errors.push(`${field.label} (Marathi) must be at most ${MARATHI_MAX_LENGTH} characters`);
+      continue;
+    }
+    result[field.marathiName] = text;
+  }
+
   return { errors, value: result };
 }
 
 /** Fields safe to expose to the client for form rendering. */
 function toClientSchema(fields) {
   return fields.map((field) => {
-    const { name, label, type, required, options, ref, refLabel, refSearch, enum: enumValues, default: defaultValue, inList, inForm, readOnly, unit, min, max, step, placeholder, help, group, minLength, maxLength } = field;
+    const { name, label, type, required, options, ref, refLabel, refSearch, enum: enumValues, default: defaultValue, inList, inForm, readOnly, unit, min, max, step, placeholder, help, group, minLength, maxLength, translit, marathiName } = field;
     return {
       name,
       label,
@@ -216,6 +241,8 @@ function toClientSchema(fields) {
       group,
       minLength,
       maxLength,
+      translit: Boolean(translit),
+      marathiName: translit ? marathiName : undefined,
     };
   });
 }

@@ -14,6 +14,10 @@ export const authApi = {
   changePassword: (payload) => api.post('/auth/change-password', payload).then((r) => r.data.data),
 }
 
+export const transliterateApi = {
+  convert: (text) => api.post('/transliterate', { text }).then((r) => r.data.data),
+}
+
 export const navigationApi = {
   tree: () => api.get('/navigation/navigation').then((r) => r.data.data),
 }

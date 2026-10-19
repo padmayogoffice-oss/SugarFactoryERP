@@ -8,8 +8,10 @@ import { accessApi } from '../../api/endpoints'
 import { apiError } from '../../api/client'
 import { Alert, Card, EmptyState, Modal, Spinner } from '../../components/ui'
 import StatusBadge from '../../components/ui/StatusBadge'
+import BilingualInput from '../../components/ui/BilingualInput'
+import { finalizeMarathi } from '../../lib/transliteration'
 
-const EMPTY = { code: '', name: '', description: '', status: 'active', permissions: [] }
+const EMPTY = { code: '', name: '', nameMr: '', description: '', descriptionMr: '', status: 'active', permissions: [] }
 
 /**
  * Role administration. Permissions are grouped by module and submodule so a
@@ -24,6 +26,8 @@ export default function RolesPage() {
   const [form, setForm] = useState(null)
   const [busy, setBusy] = useState(false)
   const [filter, setFilter] = useState('')
+  // Which Marathi values were typed by hand (so the English field no longer overwrites them).
+  const [manualMr, setManualMr] = useState({})
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -88,7 +92,8 @@ export default function RolesPage() {
     setBusy(true)
     setError(null)
     try {
-      const payload = { code: form.code, name: form.name, description: form.description, status: form.status, permissions: form.permissions }
+      const final = await finalizeMarathi(form, manualMr, ['name', 'description'])
+      const payload = { code: final.code, name: final.name, nameMr: final.nameMr, description: final.description, descriptionMr: final.descriptionMr, status: final.status, permissions: final.permissions }
       if (form.id) await accessApi.updateRole(form.id, payload)
       else await accessApi.createRole(payload)
       setForm(null)
@@ -121,7 +126,7 @@ export default function RolesPage() {
           <h1 className="text-lg font-semibold text-slate-800">Roles &amp; Permissions</h1>
           <p className="text-sm text-slate-500">Define what each type of user can see and do across {catalogue.total} permissions</p>
         </div>
-        <button type="button" className="btn-primary" onClick={() => setForm({ ...EMPTY, permissions: [] })}>+ New role</button>
+        <button type="button" className="btn-primary" onClick={() => { setManualMr({}); setForm({ ...EMPTY, permissions: [] }) }}>+ New role</button>
       </div>
 
       {error && <Alert title={error.message} onClose={() => setError(null)} />}
@@ -164,14 +169,19 @@ export default function RolesPage() {
                           <button
                             type="button"
                             className="text-xs font-medium text-emerald-700 hover:underline"
-                            onClick={() => setForm({
-                              id: row._id,
-                              code: row.code,
-                              name: row.name,
-                              description: row.description || '',
-                              status: row.status || 'active',
-                              permissions: row.permissions || [],
-                            })}
+                            onClick={() => {
+                              setManualMr({ name: Boolean(row.nameMr), description: Boolean(row.descriptionMr) })
+                              setForm({
+                                id: row._id,
+                                code: row.code,
+                                name: row.name,
+                                nameMr: row.nameMr || '',
+                                description: row.description || '',
+                                descriptionMr: row.descriptionMr || '',
+                                status: row.status || 'active',
+                                permissions: row.permissions || [],
+                              })
+                            }}
                           >
                             Edit
                           </button>
@@ -200,18 +210,36 @@ export default function RolesPage() {
                 <input id="code" className="input uppercase" required disabled={Boolean(form.id)} value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase().replace(/\s+/g, '_') })} />
               </div>
               <div>
-                <label className="label" htmlFor="name">Role name *</label>
-                <input id="name" className="input" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-              </div>
-              <div>
                 <label className="label" htmlFor="status">Status</label>
                 <select id="status" className="input" value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
                   {['active', 'inactive'].map((option) => <option key={option} value={option}>{option}</option>)}
                 </select>
               </div>
               <div className="sm:col-span-3">
-                <label className="label" htmlFor="description">Description</label>
-                <input id="description" className="input" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+                <BilingualInput
+                  id="name"
+                  label="Role name"
+                  required
+                  htmlRequired
+                  value={form.name}
+                  marathiValue={form.nameMr}
+                  manual={Boolean(manualMr.name)}
+                  onChange={(value) => setForm((current) => ({ ...current, name: value }))}
+                  onMarathiChange={(value) => setForm((current) => ({ ...current, nameMr: value }))}
+                  onManualChange={(value) => setManualMr((current) => ({ ...current, name: value }))}
+                />
+              </div>
+              <div className="sm:col-span-3">
+                <BilingualInput
+                  id="description"
+                  label="Description"
+                  value={form.description}
+                  marathiValue={form.descriptionMr}
+                  manual={Boolean(manualMr.description)}
+                  onChange={(value) => setForm((current) => ({ ...current, description: value }))}
+                  onMarathiChange={(value) => setForm((current) => ({ ...current, descriptionMr: value }))}
+                  onManualChange={(value) => setManualMr((current) => ({ ...current, description: value }))}
+                />
               </div>
             </div>
 
