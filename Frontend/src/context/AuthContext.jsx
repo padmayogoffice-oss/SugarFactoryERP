@@ -4,7 +4,8 @@
  * checks only shape the UI; the API re-checks every request.
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { authApi, navigationApi } from '../api/endpoints'
+import { authApi } from '../api/authApi'
+import { navigationApi } from '../api/navigationApi'
 import { tokenStore } from '../api/client'
 
 const AuthContext = createContext(null)

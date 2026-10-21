@@ -4,7 +4,7 @@
  * submodule / report page -> action).
  */
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { accessApi } from '../../api/endpoints'
+import { accessApi } from '../../api/accessApi'
 import { apiError } from '../../api/client'
 import { Alert, Card, EmptyState, Modal, Spinner } from '../../components/ui'
 import StatusBadge from '../../components/ui/StatusBadge'

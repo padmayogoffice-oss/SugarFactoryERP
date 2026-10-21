@@ -4,29 +4,16 @@
  * stay consistent without per-module code.
  */
 import StatusBadge from './StatusBadge'
+import { formatDate, formatNumber } from '../../utils/formatters'
 
-export function formatValue(value) {
+function formatValue(value) {
   if (value === null || value === undefined || value === '') return '—'
   if (Array.isArray(value)) return value.map((item) => (typeof item === 'object' ? item.name || item.label || item.code : item)).join(', ')
   if (typeof value === 'object') return value.name || value.label || value.code || value._id || '—'
   return value
 }
 
-export function formatNumber(value) {
-  if (value === null || value === undefined || value === '') return '—'
-  const number = Number(value)
-  if (Number.isNaN(number)) return String(value)
-  return number.toLocaleString('en-IN', { maximumFractionDigits: 2 })
-}
-
-export function formatDate(value) {
-  if (!value) return '—'
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return String(value)
-  return date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
-}
-
-export function isStatusField(field, value) {
+function isStatusField(field, value) {
   if (!field) return false
   return field.name === 'status' || field.name.endsWith('Status') || field.options?.includes(value)
 }
@@ -72,3 +59,5 @@ export default function Cell({ field, value }) {
 
   return <span>{formatValue(value)}</span>
 }
+
+export { formatDate, formatNumber, formatValue, isStatusField }

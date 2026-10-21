@@ -8,7 +8,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import { buildApiRouter } from './routes/index.js';
-import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
+import { errorHandler, notFoundHandler } from './middlewares/errorHandler.js';
 import { modules, permissionCatalog } from './registry/index.js';
 
 function createApp() {

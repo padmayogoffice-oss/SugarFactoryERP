@@ -6,7 +6,7 @@ import User from '../src/models/User.js';
 import Role from '../src/models/Role.js';
 import { signAccessToken } from '../src/services/tokenService.js';
 import transliterationRoutes from '../src/routes/transliterationRoutes.js';
-import { errorHandler } from '../src/middleware/errorHandler.js';
+import { errorHandler } from '../src/middlewares/errorHandler.js';
 import { buildResourceModels } from '../src/models/resourceModel.js';
 
 // No database is needed: authentication is satisfied by stubbing the user lookup.

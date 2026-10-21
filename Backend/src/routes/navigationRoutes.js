@@ -6,7 +6,7 @@
 import express from 'express';
 import asyncHandler from '../utils/asyncHandler.js';
 import { ok } from '../utils/apiResponse.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate } from '../middlewares/auth.js';
 import { toClientTree } from '../registry/index.js';
 import { hasSubmoduleAccess, hasPermission } from '../services/permissionService.js';
 

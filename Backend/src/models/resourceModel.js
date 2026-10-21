@@ -1,74 +1,16 @@
-/**
- * Generic model factory. Builds a Mongoose model for every registry submodule
- * that has no hand-written model, keyed by the registry `ref` name so
- * `populate()` resolves references across modules.
- */
-import mongoose from 'mongoose';
-import { toMongooseType } from '../registry/fields.js';
 import { modules } from '../registry/index.js';
+import { entityModels } from './entities/index.js';
 
-/** camelCase submodule key -> PascalCase model name (matches registry `ref` values). */
-function modelNameFor(submoduleKey) {
-  return submoduleKey.charAt(0).toUpperCase() + submoduleKey.slice(1);
-}
-
-function buildSchema(submodule) {
-  const definition = {};
-
-  for (const field of submodule.fields) {
-    if (field.readOnly) continue;
-    definition[field.name] = toMongooseType(field);
-    // Optional Marathi companion of a transliterable text field (additive; never required).
-    if (field.translit && field.marathiName) {
-      definition[field.marathiName] = { type: String, trim: true, default: '' };
-    }
-  }
-
-  definition.createdBy = { type: mongoose.Schema.Types.ObjectId, ref: 'User' };
-  definition.updatedBy = { type: mongoose.Schema.Types.ObjectId, ref: 'User' };
-
-  const schema = new mongoose.Schema(definition, {
-    timestamps: true,
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
-  });
-
-  // `unique` fields already have an index; adding another would be a duplicate.
-  const uniqueFields = new Set(submodule.fields.filter((field) => field.unique).map((field) => field.name));
-  // Marathi companions are searched with a regex, so extra indexes would not help.
-  const marathiFields = new Set(submodule.fields.filter((field) => field.translit).map((field) => field.marathiName));
-  for (const field of submodule.searchable) {
-    if (uniqueFields.has(field) || marathiFields.has(field)) continue;
-    schema.index({ [field]: 1 });
-  }
-
-  return schema;
-}
-
-/**
- * Builds (or reuses) a Mongoose model for every submodule that does not already
- * have a hand written model. Models are keyed by their registry `ref` name so
- * `populate()` works across modules.
- */
 function buildResourceModels() {
   const models = new Map();
-
   for (const moduleDef of modules) {
     for (const submodule of moduleDef.submodules) {
-      const name = modelNameFor(submodule.key);
-
-      if (mongoose.models[name]) {
-        models.set(submodule.key, { model: mongoose.models[name], submodule, module: moduleDef, name });
-        continue;
-      }
-
-      const schema = buildSchema(submodule);
-      const model = mongoose.model(name, schema);
-      models.set(submodule.key, { model, submodule, module: moduleDef, name });
+      const model = entityModels.get(submodule.key);
+      if (!model) throw new Error(`Missing model for registry resource "${submodule.key}"`);
+      models.set(submodule.key, { model, submodule, module: moduleDef, name: model.modelName });
     }
   }
-
   return models;
 }
 
-export { buildResourceModels, modelNameFor };
+export { buildResourceModels };

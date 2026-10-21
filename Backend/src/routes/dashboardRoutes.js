@@ -6,7 +6,7 @@
 import express from 'express';
 import asyncHandler from '../utils/asyncHandler.js';
 import { ok } from '../utils/apiResponse.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate } from '../middlewares/auth.js';
 import * as analytics from '../services/analyticsService.js';
 import { hasPermission } from '../services/permissionService.js';
 import { modules } from '../registry/index.js';

@@ -7,8 +7,8 @@
 import express from 'express';
 import { buildResourceModels } from '../models/resourceModel.js';
 import { modules } from '../registry/index.js';
-import { createResourceRouter } from './resourceRouter.js';
-import { authenticate } from '../middleware/auth.js';
+import { entityRoutes } from './entities/index.js';
+import { authenticate } from '../middlewares/auth.js';
 import authRoutes from './authRoutes.js';
 import accessRoutes from './accessRoutes.js';
 import navigationRoutes from './navigationRoutes.js';
@@ -37,10 +37,13 @@ function buildApiRouter() {
 
     for (const submodule of moduleDef.submodules) {
       const entry = resources.get(submodule.key);
-      if (!entry) continue;
+      const resourceRouter = entityRoutes.get(submodule.key);
+      if (!entry || !resourceRouter) {
+        throw new Error(`Missing model or route module for registry resource "${submodule.key}"`);
+      }
       api.use(
         `/${moduleDef.key}/${submodule.key}`,
-        createResourceRouter({ model: entry.model, submodule, module: moduleDef }),
+        resourceRouter,
       );
     }
   }

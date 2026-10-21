@@ -9,7 +9,7 @@ import express from 'express';
 import asyncHandler from '../utils/asyncHandler.js';
 import ApiError from '../utils/ApiError.js';
 import { ok } from '../utils/apiResponse.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate } from '../middlewares/auth.js';
 import { transliterate, TransliterationError } from '../services/transliterationService.js';
 
 const router = express.Router();

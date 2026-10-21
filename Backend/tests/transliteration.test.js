@@ -4,7 +4,7 @@ import http from 'node:http';
 import { transliterate, clearCache, resetBreaker, isProtectedToken } from '../src/services/transliterationService.js';
 import { transliterateWord } from '../src/services/offlineMarathi.js';
 import { modules } from '../src/registry/index.js';
-import { validatePayload } from '../src/registry/fields.js';
+import { validatePayload } from '../src/validators/fieldValidator.js';
 
 // A stand-in for the upstream provider so tests never touch the network.
 const DICTIONARY = { snehal: 'स्नेहल', maharashtra: 'महाराष्ट्र', factory: 'फॅक्टरी', name: 'नेम' };

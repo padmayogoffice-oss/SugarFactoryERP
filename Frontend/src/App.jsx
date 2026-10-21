@@ -3,14 +3,14 @@
  *
  * The route table is not hand-written: it is generated from the caller's
  * permission-filtered navigation tree, so a module the user cannot access has no
- * route and cannot appear in the sidebar. Custom screens override the generic
- * resource or report page for the few submodules that need bespoke UI.
+ * route and cannot appear in the sidebar. Registry entities load their own
+ * page modules; custom access screens handle bespoke workflows.
  */
+import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import AppLayout from './components/layout/AppLayout'
+import AppLayout from './layouts/AppLayout'
 import LoginPage from './pages/auth/LoginPage'
 import DashboardPage from './pages/DashboardPage'
-import ResourcePage from './pages/modules/ResourcePage'
 import UsersPage from './pages/modules/UsersPage'
 import RolesPage from './pages/modules/RolesPage'
 import ActivityLogPage from './pages/modules/ActivityLogPage'
@@ -18,6 +18,19 @@ import ReportPage from './pages/reports/ReportPage'
 import PermissionCatalogPage from './pages/modules/PermissionCatalogPage'
 import { Spinner } from './components/ui'
 import { useAuth } from './context/AuthContext'
+
+const entityPageModules = import.meta.glob('./pages/entities/**/*.jsx')
+const ENTITY_PAGES = Object.fromEntries(
+  Object.entries(entityPageModules).map(([filePath, loadPage]) => {
+    const match = filePath.match(/\.\/pages\/entities\/([^/]+)\/([^/]+)Page\.jsx$/)
+    if (!match) {
+      throw new Error(`Invalid entity page path: ${filePath}`)
+    }
+    const [, moduleKey, pageName] = match
+    const submoduleKey = pageName[0].toLowerCase() + pageName.slice(1)
+    return [`${moduleKey}/${submoduleKey}`, lazy(loadPage)]
+  }),
+)
 
 function RequireAuth({ children }) {
   const { isAuthenticated, loading } = useAuth()
@@ -32,7 +45,7 @@ function RequireAuth({ children }) {
   return children
 }
 
-/** Custom pages that replace the generic resource page for specific submodules. */
+/** Custom screens for access-control submodules with bespoke workflows. */
 const CUSTOM_PAGES = {
   'access/user': UsersPage,
   'access/role': RolesPage,
@@ -70,6 +83,7 @@ export default function App() {
     for (const submodule of moduleDef.submodules) {
       const path = `/m/${moduleDef.key}/${submodule.key}`
       const Custom = CUSTOM_PAGES[`${moduleDef.key}/${submodule.key}`]
+      const EntityPage = ENTITY_PAGES[`${moduleDef.key}/${submodule.key}`]
       resourceRoutes.push(
         <Route
           key={path}
@@ -77,8 +91,10 @@ export default function App() {
           element={
             Custom ? (
               <Custom />
+            ) : EntityPage ? (
+              <EntityPage />
             ) : (
-              <ResourcePage moduleKey={moduleDef.key} submoduleKey={submodule.key} />
+              <NotFound />
             )
           }
         />,
@@ -98,21 +114,29 @@ export default function App() {
   }
 
   return (
-    <Routes>
-      <Route path="/login" element={<LoginPage />} />
+    <Suspense
+      fallback={
+        <div className="flex h-full items-center justify-center">
+          <Spinner label="Loading page…" />
+        </div>
+      }
+    >
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
 
-      <Route
-        element={
-          <RequireAuth>
-            <AppLayout />
-          </RequireAuth>
-        }
-      >
-        <Route index element={<DashboardPage />} />
-        {isAuthenticated && resourceRoutes}
-        {isAuthenticated && reportRoutes}
-        <Route path="*" element={<NotFound />} />
-      </Route>
-    </Routes>
+        <Route
+          element={
+            <RequireAuth>
+              <AppLayout />
+            </RequireAuth>
+          }
+        >
+          <Route index element={<DashboardPage />} />
+          {isAuthenticated && resourceRoutes}
+          {isAuthenticated && reportRoutes}
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+    </Suspense>
   )
 }

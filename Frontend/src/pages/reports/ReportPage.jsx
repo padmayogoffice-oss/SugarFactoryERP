@@ -4,11 +4,10 @@
  */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { reportApi } from '../../api/endpoints'
+import { reportApi } from '../../api/reportApi'
 import { apiError } from '../../api/client'
 import { Alert, BarList, Card, EmptyState, Spinner, StatTile } from '../../components/ui'
-import { formatNumber } from '../../components/ui/Cell'
-import { humanise } from '../../components/layout/Sidebar'
+import { formatNumber, humanise } from '../../utils/formatters'
 
 const ROW_KEYS = ['label', 'name', 'item', 'customer', 'vendor', 'supplier', 'account', 'equipment', 'grade', 'date', 'shift', 'status', 'reason', 'expenseHead', 'costHead', 'sampleType', 'result', 'accountType', 'paymentMode', 'paymentStatus', 'breakdownType', 'complianceType', 'transactionType', 'department', 'variety', 'month', 'transporter', 'voucherNo']
 const NUMERIC_HINT = /(amount|total|value|qty|quantity|mt|kwh|hours|balance|percent|count|orders|invoices|entries|samples|trips|bags|tests|slips|debit|credit|employees|incidents|loss)/i

@@ -7,8 +7,7 @@
  * clears the stored session and redirects to the login page.
  */
 import axios from 'axios'
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api'
+import BASE_URL from '../config/api'
 
 const ACCESS_TOKEN_KEY = 'sferp.accessToken'
 const REFRESH_TOKEN_KEY = 'sferp.refreshToken'
@@ -28,13 +27,6 @@ export const tokenStore = {
 
 export const api = axios.create({ baseURL: BASE_URL, timeout: 20000 })
 
-api.interceptors.request.use((config) => {
-  const token = tokenStore.getAccess()
-  if (token) config.headers.Authorization = `Bearer ${token}`
-  return config
-})
-
-// A single in-flight refresh is shared so parallel 401s do not each rotate.
 let refreshPromise = null
 
 async function refreshSession() {
@@ -42,9 +34,65 @@ async function refreshSession() {
   if (!refreshToken) throw new Error('No refresh token')
 
   const { data } = await axios.post(`${BASE_URL}/auth/refresh`, { refreshToken })
-  tokenStore.set({ accessToken: data.data.accessToken, refreshToken: data.data.refreshToken })
-  return data.data.accessToken
+  const accessToken = data?.data?.accessToken
+  const nextRefreshToken = data?.data?.refreshToken
+  if (!accessToken || !nextRefreshToken) {
+    throw new Error('Refresh response did not include a complete session')
+  }
+  tokenStore.set({ accessToken, refreshToken: nextRefreshToken })
+  return accessToken
 }
+
+function getRefreshedAccessToken() {
+  if (!refreshPromise) {
+    refreshPromise = refreshSession().finally(() => {
+      refreshPromise = null
+    })
+  }
+  return refreshPromise
+}
+
+function getTokenExpiry(token) {
+  try {
+    const payload = token.split('.')[1]
+    if (!payload) return null
+    const base64 = payload.replace(/-/g, '+').replace(/_/g, '/')
+    const decoded = atob(base64.padEnd(Math.ceil(base64.length / 4) * 4, '='))
+    const expiry = JSON.parse(decoded).exp
+    return Number.isFinite(expiry) ? expiry * 1000 : null
+  } catch {
+    return null
+  }
+}
+
+function isAuthEntryCall(url = '') {
+  return /\/auth\/(login|register)\/?$/.test(url.split('?')[0])
+}
+
+function redirectToLogin() {
+  if (!window.location.pathname.startsWith('/login')) {
+    window.location.assign('/login')
+  }
+}
+
+api.interceptors.request.use(async (config) => {
+  let token = tokenStore.getAccess()
+  const expiresAt = token ? getTokenExpiry(token) : null
+  const needsRefresh = !token || (expiresAt !== null && expiresAt <= Date.now() + 60_000)
+
+  if (needsRefresh && tokenStore.getRefresh() && !isAuthEntryCall(config.url)) {
+    try {
+      token = await getRefreshedAccessToken()
+    } catch (error) {
+      tokenStore.clear()
+      redirectToLogin()
+      return Promise.reject(error)
+    }
+  }
+
+  if (token) config.headers.set('Authorization', `Bearer ${token}`)
+  return config
+})
 
 api.interceptors.response.use(
   (response) => response,
@@ -52,23 +100,22 @@ api.interceptors.response.use(
     const original = error.config
     const status = error.response?.status
     const isRefreshCall = original?.url?.includes('/auth/refresh')
-    const isAuthEntryCall = /\/auth\/(login|register)\/?$/.test(original?.url?.split('?')[0] || '')
 
-    if (status === 401 && !original?._retried && !isRefreshCall && !isAuthEntryCall) {
+    if (status === 401 && !original?._retried && !isRefreshCall && !isAuthEntryCall(original?.url)) {
       original._retried = true
       try {
-        refreshPromise = refreshPromise || refreshSession()
-        const accessToken = await refreshPromise
-        refreshPromise = null
-        original.headers.Authorization = `Bearer ${accessToken}`
+        const currentToken = tokenStore.getAccess()
+        const sentAuthorization = original.headers?.get?.('Authorization') || original.headers?.Authorization
+        const sentToken = sentAuthorization?.startsWith('Bearer ') ? sentAuthorization.slice(7) : null
+        const accessToken =
+          currentToken && currentToken !== sentToken ? currentToken : await getRefreshedAccessToken()
+        if (!accessToken) throw new Error('Unable to renew the access token')
+        original.headers.set('Authorization', `Bearer ${accessToken}`)
         return api(original)
-      } catch (refreshError) {
-        refreshPromise = null
+      } catch (error) {
         tokenStore.clear()
-        if (!window.location.pathname.startsWith('/login')) {
-          window.location.assign('/login')
-        }
-        return Promise.reject(refreshError)
+        redirectToLogin()
+        return Promise.reject(error)
       }
     }
 

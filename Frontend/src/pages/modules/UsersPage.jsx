@@ -3,13 +3,13 @@
  * password handling delegated to the backend and the super admin shown explicitly.
  */
 import { useCallback, useEffect, useState } from 'react'
-import { accessApi } from '../../api/endpoints'
+import { accessApi } from '../../api/accessApi'
 import { apiError } from '../../api/client'
 import { Alert, Card, EmptyState, Modal, Pagination, Spinner } from '../../components/ui'
 import StatusBadge from '../../components/ui/StatusBadge'
 import BilingualInput from '../../components/ui/BilingualInput'
 import { finalizeMarathi } from '../../lib/transliteration'
-import { formatDate } from '../../components/ui/Cell'
+import { formatDate } from '../../utils/formatters'
 
 const EMPTY = { employeeCode: '', firstName: '', firstNameMr: '', lastName: '', lastNameMr: '', email: '', phone: '', password: '', status: 'active', roles: [] }
 

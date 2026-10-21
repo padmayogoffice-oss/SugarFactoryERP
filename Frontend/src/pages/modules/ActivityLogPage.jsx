@@ -3,7 +3,7 @@
  * over the actions recorded by the backend audit middleware.
  */
 import { useCallback, useEffect, useState } from 'react'
-import { accessApi } from '../../api/endpoints'
+import { accessApi } from '../../api/accessApi'
 import { apiError } from '../../api/client'
 import { Alert, Card, EmptyState, Pagination, Spinner } from '../../components/ui'
 import StatusBadge from '../../components/ui/StatusBadge'

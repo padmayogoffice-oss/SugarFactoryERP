@@ -5,7 +5,7 @@
  * de-duplication, so identical text is never requested twice. Debouncing lives
  * in <BilingualInput>; this module only deals with requests and caching.
  */
-import { transliterateApi } from '../api/endpoints'
+import { transliterateApi } from '../api/transliterationApi'
 
 export const MARATHI_SUFFIX = 'Mr'
 export const MAX_TRANSLITERATION_LENGTH = 1000

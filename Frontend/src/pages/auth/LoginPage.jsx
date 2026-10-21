@@ -3,7 +3,7 @@
  * validation or lockout errors returned by the API.
  */
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { apiError } from '../../api/client'
 import { Alert } from '../../components/ui'
@@ -15,7 +15,7 @@ export default function LoginPage() {
   const [error, setError] = useState(null)
   const [busy, setBusy] = useState(false)
 
-  if (isAuthenticated) navigate('/', { replace: true })
+  if (isAuthenticated) return <Navigate to="/" replace />
 
   async function onSubmit(event) {
     event.preventDefault()

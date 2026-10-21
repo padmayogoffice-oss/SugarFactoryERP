@@ -3,7 +3,7 @@
  * by module, then by submodule and report page, with the total count.
  */
 import { useEffect, useMemo, useState } from 'react'
-import { accessApi } from '../../api/endpoints'
+import { accessApi } from '../../api/accessApi'
 import { apiError } from '../../api/client'
 import { Alert, Card, Spinner } from '../../components/ui'
 
