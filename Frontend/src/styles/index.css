@@ -45,3 +45,28 @@
     @apply px-3 py-2 text-sm text-slate-700;
   }
 }
+
+/* ---- Sugarcane cursor ---- */
+/* Unlayered so it overrides Tailwind cursor utilities. Hotspot = cane tip (3,3). */
+html,
+body {
+  cursor: url("/cursors/sugarcane.svg") 3 3, default;
+}
+a,
+button,
+summary,
+select,
+label[for],
+[role="button"],
+input[type="checkbox"],
+input[type="radio"],
+input[type="submit"],
+input[type="button"],
+.cursor-pointer {
+  cursor: url("/cursors/sugarcane-pointer.svg") 3 3, pointer;
+}
+button:disabled,
+[aria-disabled="true"],
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
