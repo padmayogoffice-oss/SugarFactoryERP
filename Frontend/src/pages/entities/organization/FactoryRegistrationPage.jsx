@@ -9,6 +9,7 @@ import { humanise } from '../../../utils/formatters'
 import { finalizeMarathi } from '../../../lib/transliteration'
 import EntityReferenceOptions from '../../../components/forms/EntityReferenceOptions'
 import useEntityList from '../../../hooks/useEntityList'
+import FactoryGateIntro from '../../../components/ui/FactoryGateIntro'
 
 const moduleKey = "organization"
 const submoduleKey = "factoryRegistration"
@@ -265,6 +266,7 @@ export default function FactoryRegistrationPage() {
   const [notice, setNotice] = useState(null)
   const [editing, setEditing] = useState(null)
   const [formOpen, setFormOpen] = useState(false)
+  const [intro, setIntro] = useState(false)
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState(() => buildEntityForm(fields, null).form)
   const [manualMarathi, setManualMarathi] = useState(() => buildEntityForm(fields, null).manualMarathi)
@@ -283,7 +285,7 @@ export default function FactoryRegistrationPage() {
     const initial = buildEntityForm(fields, null)
     setForm(initial.form)
     setManualMarathi(initial.manualMarathi)
-    setFormOpen(true)
+    setIntro(true)
   }
 
   function startEdit(row) {
@@ -372,7 +374,7 @@ export default function FactoryRegistrationPage() {
         {!loading && rows.length > 0 && <Pagination page={meta.page} totalPages={meta.totalPages} total={meta.total} onChange={(nextPage) => { setError(null); setLoading(true); setPage(nextPage) }} />}
       </Card>
 
-      <Modal open={formOpen} wide title={(editing ? 'Edit ' : 'New ') + (entity?.name || entityName)} onClose={() => setFormOpen(false)}>
+      <Modal open={formOpen} wide panelClassName={editing ? '' : 'fgi-slide-in'} title={(editing ? 'Edit ' : 'New ') + (entity?.name || entityName)} onClose={() => setFormOpen(false)}>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && <Alert title={error.message} onClose={() => setError(null)}>{error.details?.length ? <ul className="mt-1 list-inside list-disc text-xs">{error.details.map((detail) => <li key={detail}>{detail}</li>)}</ul> : null}</Alert>}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -397,6 +399,7 @@ export default function FactoryRegistrationPage() {
           </div>
         </form>
       </Modal>
+      {intro && <FactoryGateIntro onOpen={() => setFormOpen(true)} onEnd={() => setIntro(false)} />}
         </div>
       )}
     </EntityReferenceOptions>

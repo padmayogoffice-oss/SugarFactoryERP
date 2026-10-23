@@ -9,6 +9,7 @@ import { humanise } from '../../../utils/formatters'
 import { finalizeMarathi } from '../../../lib/transliteration'
 import EntityReferenceOptions from '../../../components/forms/EntityReferenceOptions'
 import useEntityList from '../../../hooks/useEntityList'
+import FarmerCaneIntro from '../../../components/ui/FarmerCaneIntro'
 
 const moduleKey = "cane"
 const submoduleKey = "farmer"
@@ -234,6 +235,7 @@ export default function FarmerPage() {
   const [notice, setNotice] = useState(null)
   const [editing, setEditing] = useState(null)
   const [formOpen, setFormOpen] = useState(false)
+  const [intro, setIntro] = useState(false)
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState(() => buildEntityForm(fields, null).form)
   const [manualMarathi, setManualMarathi] = useState(() => buildEntityForm(fields, null).manualMarathi)
@@ -252,7 +254,7 @@ export default function FarmerPage() {
     const initial = buildEntityForm(fields, null)
     setForm(initial.form)
     setManualMarathi(initial.manualMarathi)
-    setFormOpen(true)
+    setIntro(true)
   }
 
   function startEdit(row) {
@@ -366,6 +368,7 @@ export default function FarmerPage() {
           </div>
         </form>
       </Modal>
+      {intro && <FarmerCaneIntro onLift={() => setFormOpen(true)} onEnd={() => setIntro(false)} />}
         </div>
       )}
     </EntityReferenceOptions>

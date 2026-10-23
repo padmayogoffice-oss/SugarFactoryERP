@@ -1,0 +1,118 @@
+/*
+ * Farmer Registration intro. One master timeline (4.65s) drives every part, so
+ * there are no phase switches / jumps:
+ *   0.00-1.50s walk | 1.50-2.40s sugarcane slips and falls | 2.40-2.90s "अरे!"
+ *   2.90-3.50s bends down | 3.50-4.20s lifts it again | 4.20-4.65s fade out
+ */
+.fci-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.55);
+  animation: fci-overlay 4.65s linear forwards;
+}
+@keyframes fci-overlay { 0% { opacity: 0; } 4% { opacity: 1; } 90.3% { opacity: 1; } 100% { opacity: 0; } }
+
+.fci-card {
+  position: relative;
+  width: min(100%, 640px);
+  overflow: hidden;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+.fci-svg { display: block; width: 100%; height: auto; }
+.fci-caption { padding: 10px 16px 12px; text-align: center; background: #f0fdf4; border-top: 1px solid #bbf7d0; }
+.fci-caption strong { display: block; font-size: 15px; color: #166534; }
+.fci-caption span { font-size: 12px; color: #4b5563; }
+.fci-skip {
+  position: absolute; top: 10px; right: 10px; padding: 4px 12px; border: 0; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85); color: #334155; font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.fci-skip:hover { background: #fff; }
+
+/* parts that need a pivot (user units inside the farmer's own coordinate space) */
+.fci-leg-crouch, .fci-leg-swing, .fci-body-move { transform-origin: 0 -80px; }
+.fci-arm-move, .fci-arm-swing { transform-origin: 0 -125px; }
+.fci-stalk { transform-box: fill-box; transform-origin: center; }
+.fci-dust { transform-box: fill-box; transform-origin: center; opacity: 0; }
+
+/* ---- walking across ---- */
+.fci-walker { animation: fci-walker 4.65s linear forwards; }
+@keyframes fci-walker { 0% { transform: translateX(-150px); } 32.26%, 100% { transform: translateX(250px); } }
+
+.fci-leg-swing-a { animation: fci-swing-a 0.5s ease-in-out 3; }
+.fci-leg-swing-b { animation: fci-swing-b 0.5s ease-in-out 3; }
+@keyframes fci-swing-a { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(25deg); } 75% { transform: rotate(-25deg); } }
+@keyframes fci-swing-b { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-25deg); } 75% { transform: rotate(25deg); } }
+.fci-arm-swing { animation: fci-swing-b 0.5s ease-in-out 3; }
+.fci-body-bob { animation: fci-bob 0.25s ease-in-out 6 alternate; }
+@keyframes fci-bob { from { transform: translateY(0); } to { transform: translateY(-3px); } }
+
+/* ---- crouch / bend / lift ---- */
+.fci-leg-crouch { animation: fci-crouch 4.65s ease-in-out forwards; }
+@keyframes fci-crouch {
+  0%, 62.4% { transform: translate(0, 0) scale(1, 1); }
+  73%, 76% { transform: translate(0, 32px) scale(1, 0.62); }
+  90.3%, 100% { transform: translate(0, 0) scale(1, 1); }
+}
+.fci-body-move { animation: fci-body 4.65s ease-in-out forwards; }
+@keyframes fci-body {
+  0%, 32.26% { transform: translate(0, 0) rotate(0deg); }
+  36% { transform: translate(0, 0) rotate(-9deg); }
+  42%, 62.4% { transform: translate(0, 0) rotate(0deg); }
+  73%, 76% { transform: translate(0, 32px) rotate(80deg); }
+  90.3%, 100% { transform: translate(0, 0) rotate(0deg); }
+}
+.fci-arm-move { animation: fci-arm 4.65s ease-in-out forwards; }
+@keyframes fci-arm {
+  0%, 62.4% { transform: rotate(0deg); }
+  73%, 76% { transform: rotate(-80deg); }
+  90.3%, 100% { transform: rotate(0deg); }
+}
+
+/* hand: holding the bundle while walking, hanging/reaching otherwise */
+.fci-arm-carry { animation: fci-carry-vis 4.65s linear forwards; }
+@keyframes fci-carry-vis { 0%, 32.2% { opacity: 1; } 33.5%, 90.3% { opacity: 0; } 92%, 100% { opacity: 1; } }
+.fci-arm-reach { opacity: 0; animation: fci-reach-vis 4.65s linear forwards; }
+@keyframes fci-reach-vis { 0%, 32.2% { opacity: 0; } 33.5%, 90.3% { opacity: 1; } 91.5%, 100% { opacity: 0; } }
+
+/* ---- the sugarcane bundle ---- */
+.fci-cane { animation: fci-cane 4.65s forwards; }
+@keyframes fci-cane {
+  0%, 32.26% { transform: translate(0, 0) rotate(0deg); animation-timing-function: ease-in; }
+  36.5% { transform: translate(6px, 14px) rotate(7deg); animation-timing-function: cubic-bezier(0.5, 0, 1, 0.6); }
+  44.5% { transform: translate(40px, 124px) rotate(34deg); animation-timing-function: ease-out; }
+  47% { transform: translate(42px, 108px) rotate(44deg); animation-timing-function: ease-in; }
+  49.5% { transform: translate(40px, 124px) rotate(36deg); animation-timing-function: ease-out; }
+  51.6%, 76% { transform: translate(40px, 124px) rotate(38deg); animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+  90.3%, 100% { transform: translate(0, 0) rotate(0deg); }
+}
+.fci-stalk { animation: fci-scatter 4.65s ease-in-out forwards; }
+@keyframes fci-scatter {
+  0%, 44% { transform: rotate(0deg); }
+  52%, 76% { transform: rotate(var(--r, 0deg)); }
+  90.3%, 100% { transform: rotate(0deg); }
+}
+.fci-stalk:nth-child(1) { --r: -8deg; }
+.fci-stalk:nth-child(2) { --r: 4deg; }
+.fci-stalk:nth-child(4) { --r: -5deg; }
+.fci-stalk:nth-child(5) { --r: 8deg; }
+
+/* ---- "अरे!" bubble and dust ---- */
+.fci-bubble { opacity: 0; animation: fci-bubble 4.65s ease-out forwards; }
+@keyframes fci-bubble {
+  0%, 36% { opacity: 0; transform: translateY(6px); }
+  38.5%, 62.4% { opacity: 1; transform: translateY(0); }
+  64%, 100% { opacity: 0; transform: translateY(0); }
+}
+.fci-dust { animation: fci-dust 4.65s ease-out forwards; }
+@keyframes fci-dust {
+  0%, 41% { opacity: 0; transform: scale(0.4) translateY(0); }
+  42% { opacity: 0.8; transform: scale(0.4) translateY(0); }
+  52%, 100% { opacity: 0; transform: scale(1.8) translateY(-8px); }
+}
