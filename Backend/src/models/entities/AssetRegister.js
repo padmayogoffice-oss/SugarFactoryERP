@@ -15,6 +15,8 @@ const schema = new mongoose.Schema({
   "nameMr": { type: String, trim: true, default: '' },
   "locationMr": { type: String, trim: true, default: '' },
   "remarksMr": { type: String, trim: true, default: '' },
+  "equipment": { type: mongoose.Schema.Types.ObjectId, ref: "Equipment" },
+  "department": { type: mongoose.Schema.Types.ObjectId, ref: "Department" },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 }, {

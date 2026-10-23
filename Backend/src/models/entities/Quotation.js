@@ -20,6 +20,7 @@ const schema = new mongoose.Schema({
   "remarks": { type: String },
   "paymentTermsMr": { type: String, trim: true, default: '' },
   "remarksMr": { type: String, trim: true, default: '' },
+  "totalAmount": { type: Number },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 }, {

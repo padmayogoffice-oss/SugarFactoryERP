@@ -17,6 +17,7 @@ const schema = new mongoose.Schema({
   "remarks": { type: String },
   "testedByMr": { type: String, trim: true, default: '' },
   "remarksMr": { type: String, trim: true, default: '' },
+  "sample": { type: mongoose.Schema.Types.ObjectId, ref: "SampleCollection" },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 }, {

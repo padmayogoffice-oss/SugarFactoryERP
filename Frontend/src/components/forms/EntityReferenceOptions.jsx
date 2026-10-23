@@ -1,53 +1,26 @@
-import { useEffect, useState } from 'react'
-import { Alert } from '../ui'
-import { api, apiError } from '../../api/client'
+import { useMemo } from 'react'
+import { useLocation } from 'react-router-dom'
+import { EntityBridgeProvider } from './EntityBridge'
 
-function normalizeReferenceKey(value) {
-  return typeof value === 'string' ? value.trim().toLowerCase() : ''
-}
+/**
+ * Wraps an entity form. Reference dropdowns no longer need every related record
+ * loaded up front: each one searches the backend on demand (see RefSelect), so
+ * `refOptions` is kept only for compatibility with the pages that call
+ * `children(refOptions)`.
+ *
+ * It also identifies the entity from the route (/m/<module>/<submodule>) and
+ * provides the bridge that links the form's fields (auto-fill, cascading clears).
+ */
+const NO_OPTIONS = {}
 
-export default function EntityReferenceOptions({ fields, navigation, children }) {
-  const [refOptions, setRefOptions] = useState({})
-  const [error, setError] = useState(null)
+export default function EntityReferenceOptions({ navigation, children }) {
+  const { pathname } = useLocation()
 
-  useEffect(() => {
-    let cancelled = false
-    const references = fields.filter((field) => field.type === 'ref' || field.type === 'refs')
-    if (!references.length || !navigation?.modules) return undefined
+  const entity = useMemo(() => {
+    const match = pathname.match(/^\/m\/([^/]+)\/([^/]+)/)
+    if (!match) return null
+    return navigation?.modules?.find((item) => item.key === match[1])?.submodules?.find((item) => item.key === match[2]) || null
+  }, [navigation, pathname])
 
-    Promise.all(references.map(async (field) => {
-      const target = navigation?.modules
-        ?.flatMap((item) => item.submodules.map((submodule) => ({ moduleKey: item.key, submodule })))
-        .find((item) => normalizeReferenceKey(item.submodule.key) === normalizeReferenceKey(field.ref))
-      if (!target) return [field.name, [], `Reference target "${field.ref}" is unavailable`]
-      try {
-        const response = await api.get('/' + target.moduleKey + '/' + target.submodule.key + '/options')
-        return [field.name, response.data.data || [], null]
-      } catch (requestError) {
-        return [field.name, [], apiError(requestError).message]
-      }
-    })).then((entries) => {
-      if (cancelled) return
-      setRefOptions(Object.fromEntries(entries.map(([name, options]) => [name, options])))
-      const failures = entries.filter(([, , message]) => message).map(([name, , message]) => `${name}: ${message}`)
-      setError(failures.length ? { message: 'Some reference choices could not be loaded', details: failures } : null)
-    })
-
-    return () => {
-      cancelled = true
-    }
-  }, [fields, navigation])
-
-  return (
-    <>
-      {error && fields.some((field) => field.type === 'ref' || field.type === 'refs') && (
-        <Alert title={error.message}>
-          <ul className="mt-1 list-inside list-disc text-xs">
-            {(error.details || []).map((detail) => <li key={detail}>{detail}</li>)}
-          </ul>
-        </Alert>
-      )}
-      {children(refOptions)}
-    </>
-  )
+  return <EntityBridgeProvider entity={entity}>{children(NO_OPTIONS)}</EntityBridgeProvider>
 }

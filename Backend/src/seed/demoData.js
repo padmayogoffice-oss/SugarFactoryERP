@@ -4,6 +4,7 @@
  * documents so the UI has linked data to display.
  */
 import { modules } from '../registry/index.js';
+import { setReferenceValidation } from '../plugins/interconnectionPlugin.js';
 
 /**
  * Generates a realistic value for a field definition so seeded records exercise
@@ -53,7 +54,7 @@ function valueFor(field, index) {
  * immediately from records already created, which matches the dependency order
  * declared in the registry. Self references are backfilled after insert.
  */
-async function seedDemoData(resources, { recordsPerSubmodule = 4 } = {}) {
+async function seedDemoDataUnchecked(resources, { recordsPerSubmodule = 4 } = {}) {
   const created = new Map();
   const pendingSelfRefs = [];
   const byModelName = new Map([...resources.values()].map((entry) => [entry.name, entry]));
@@ -123,6 +124,20 @@ async function seedDemoData(resources, { recordsPerSubmodule = 4 } = {}) {
   }
 
   return created;
+}
+
+/**
+ * Demo records are generated at random (statuses cycle through every option, links
+ * are picked round-robin), so they are inserted without reference validation. They
+ * still receive generated numbers and stored totals.
+ */
+async function seedDemoData(resources, options) {
+  setReferenceValidation(false);
+  try {
+    return await seedDemoDataUnchecked(resources, options);
+  } finally {
+    setReferenceValidation(true);
+  }
 }
 
 export { seedDemoData };

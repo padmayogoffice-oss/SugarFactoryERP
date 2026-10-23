@@ -70,6 +70,18 @@ const fields =   [
       "translit": false
     },
     {
+      "name": "item",
+      "label": "Product (Item)",
+      "type": "ref",
+      "required": false,
+      "ref": "Item",
+      "refLabel": "code",
+      "inList": false,
+      "inForm": true,
+      "readOnly": false,
+      "translit": false
+    },
+    {
       "name": "quantityMt",
       "label": "Quantity",
       "type": "number",

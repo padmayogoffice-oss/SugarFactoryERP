@@ -37,6 +37,18 @@ const fields =   [
       "translit": false
     },
     {
+      "name": "sample",
+      "label": "Sample",
+      "type": "ref",
+      "required": false,
+      "ref": "SampleCollection",
+      "refLabel": "sampleNo",
+      "inList": false,
+      "inForm": true,
+      "readOnly": false,
+      "translit": false
+    },
+    {
       "name": "sampleType",
       "label": "Sample Type",
       "type": "select",

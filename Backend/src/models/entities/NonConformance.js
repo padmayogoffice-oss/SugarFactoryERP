@@ -21,6 +21,7 @@ const schema = new mongoose.Schema({
   "preventiveActionMr": { type: String, trim: true, default: '' },
   "responsiblePersonMr": { type: String, trim: true, default: '' },
   "remarksMr": { type: String, trim: true, default: '' },
+  "item": { type: mongoose.Schema.Types.ObjectId, ref: "Item" },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 }, {

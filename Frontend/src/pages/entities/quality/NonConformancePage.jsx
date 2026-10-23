@@ -55,6 +55,18 @@ const fields =   [
       "translit": false
     },
     {
+      "name": "item",
+      "label": "Item",
+      "type": "ref",
+      "required": false,
+      "ref": "Item",
+      "refLabel": "code",
+      "inList": false,
+      "inForm": true,
+      "readOnly": false,
+      "translit": false
+    },
+    {
       "name": "description",
       "label": "Description",
       "type": "text",

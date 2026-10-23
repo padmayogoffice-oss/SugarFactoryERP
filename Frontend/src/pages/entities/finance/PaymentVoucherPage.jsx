@@ -95,6 +95,54 @@ const fields =   [
       "translit": false
     },
     {
+      "name": "employee",
+      "label": "Employee",
+      "type": "ref",
+      "required": false,
+      "ref": "Employee",
+      "refLabel": "employeeCode",
+      "inList": false,
+      "inForm": true,
+      "readOnly": false,
+      "translit": false
+    },
+    {
+      "name": "purchaseOrder",
+      "label": "Purchase Order",
+      "type": "ref",
+      "required": false,
+      "ref": "PurchaseOrder",
+      "refLabel": "poNo",
+      "inList": false,
+      "inForm": true,
+      "readOnly": false,
+      "translit": false
+    },
+    {
+      "name": "goodsReceipt",
+      "label": "Goods Receipt",
+      "type": "ref",
+      "required": false,
+      "ref": "GoodsReceipt",
+      "refLabel": "grnNo",
+      "inList": false,
+      "inForm": true,
+      "readOnly": false,
+      "translit": false
+    },
+    {
+      "name": "canePayment",
+      "label": "Cane Payment",
+      "type": "ref",
+      "required": false,
+      "ref": "CanePayment",
+      "refLabel": "paymentNo",
+      "inList": false,
+      "inForm": true,
+      "readOnly": false,
+      "translit": false
+    },
+    {
       "name": "amount",
       "label": "Amount",
       "type": "currency",

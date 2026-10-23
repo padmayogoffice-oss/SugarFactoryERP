@@ -8,6 +8,7 @@ import express from 'express';
 import { buildResourceModels } from '../models/resourceModel.js';
 import { modules } from '../registry/index.js';
 import { entityRoutes } from './entities/index.js';
+import { buildOptionsRouter } from './entityOptionsRoutes.js';
 import { authenticate } from '../middlewares/auth.js';
 import authRoutes from './authRoutes.js';
 import accessRoutes from './accessRoutes.js';
@@ -43,6 +44,8 @@ function buildApiRouter() {
       }
       api.use(
         `/${moduleDef.key}/${submodule.key}`,
+        // Shared, searchable options endpoint first; it only answers GET /options.
+        buildOptionsRouter({ moduleKey: moduleDef.key, submodule, model: entry.model }),
         resourceRouter,
       );
     }

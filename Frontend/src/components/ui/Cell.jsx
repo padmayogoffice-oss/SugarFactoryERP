@@ -9,7 +9,11 @@ import { formatDate, formatNumber } from '../../utils/formatters'
 function formatValue(value) {
   if (value === null || value === undefined || value === '') return '—'
   if (Array.isArray(value)) return value.map((item) => (typeof item === 'object' ? item.name || item.label || item.code : item)).join(', ')
-  if (typeof value === 'object') return value.name || value.label || value.code || value._id || '—'
+  if (typeof value === 'object') {
+    // A populated reference: prefer a name, then any identifying text (e.g. a PO number).
+    const text = Object.entries(value).find(([key, item]) => key !== '_id' && key !== 'id' && typeof item === 'string' && item)?.[1]
+    return value.name || value.label || value.code || text || value._id || '—'
+  }
   return value
 }
 

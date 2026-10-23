@@ -49,6 +49,18 @@ const fields =   [
       "translit": false
     },
     {
+      "name": "contract",
+      "label": "Cane Contract",
+      "type": "ref",
+      "required": false,
+      "ref": "CaneContract",
+      "refLabel": "contractNo",
+      "inList": false,
+      "inForm": true,
+      "readOnly": false,
+      "translit": false
+    },
+    {
       "name": "season",
       "label": "Season",
       "type": "select",

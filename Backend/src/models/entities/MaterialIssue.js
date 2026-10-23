@@ -17,6 +17,7 @@ const schema = new mongoose.Schema({
   "remarks": { type: String },
   "issuedToMr": { type: String, trim: true, default: '' },
   "remarksMr": { type: String, trim: true, default: '' },
+  "totalValue": { type: Number },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 }, {

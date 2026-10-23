@@ -14,6 +14,9 @@ const schema = new mongoose.Schema({
   "rate": { type: Number },
   "remarks": { type: String },
   "remarksMr": { type: String, trim: true, default: '' },
+  "value": { type: Number },
+  "sourceModel": { type: String, index: true },
+  "sourceId": { type: mongoose.Schema.Types.ObjectId, index: true },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 }, {

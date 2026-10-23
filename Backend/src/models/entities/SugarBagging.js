@@ -14,6 +14,8 @@ const schema = new mongoose.Schema({
   "status": { type: String, default: "draft" },
   "remarks": { type: String },
   "remarksMr": { type: String, trim: true, default: '' },
+  "item": { type: mongoose.Schema.Types.ObjectId, ref: "Item" },
+  "totalQtyMt": { type: Number },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 }, {

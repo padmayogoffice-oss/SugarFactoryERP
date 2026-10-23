@@ -19,6 +19,10 @@ const schema = new mongoose.Schema({
   "status": { type: String, default: "draft" },
   "remarks": { type: String },
   "remarksMr": { type: String, trim: true, default: '' },
+  "employee": { type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
+  "purchaseOrder": { type: mongoose.Schema.Types.ObjectId, ref: "PurchaseOrder" },
+  "goodsReceipt": { type: mongoose.Schema.Types.ObjectId, ref: "GoodsReceipt" },
+  "canePayment": { type: mongoose.Schema.Types.ObjectId, ref: "CanePayment" },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 }, {

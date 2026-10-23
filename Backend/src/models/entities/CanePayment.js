@@ -15,6 +15,9 @@ const schema = new mongoose.Schema({
   "status": { type: String, default: "pending" },
   "remarks": { type: String },
   "remarksMr": { type: String, trim: true, default: '' },
+  "contract": { type: mongoose.Schema.Types.ObjectId, ref: "CaneContract" },
+  "grossAmount": { type: Number },
+  "netAmount": { type: Number },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 }, {

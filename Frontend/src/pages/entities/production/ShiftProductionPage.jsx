@@ -37,6 +37,18 @@ const fields =   [
       "translit": false
     },
     {
+      "name": "crushingPlan",
+      "label": "Crushing Plan",
+      "type": "ref",
+      "required": false,
+      "ref": "CrushingPlan",
+      "refLabel": "planNo",
+      "inList": false,
+      "inForm": true,
+      "readOnly": false,
+      "translit": false
+    },
+    {
       "name": "shift",
       "label": "Shift",
       "type": "select",

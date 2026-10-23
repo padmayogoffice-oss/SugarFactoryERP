@@ -49,6 +49,30 @@ const fields =   [
       "translit": false
     },
     {
+      "name": "breakdown",
+      "label": "Breakdown Ticket",
+      "type": "ref",
+      "required": false,
+      "ref": "BreakdownMaintenance",
+      "refLabel": "ticketNo",
+      "inList": false,
+      "inForm": true,
+      "readOnly": false,
+      "translit": false
+    },
+    {
+      "name": "preventive",
+      "label": "Preventive Schedule",
+      "type": "ref",
+      "required": false,
+      "ref": "PreventiveMaintenance",
+      "refLabel": "scheduleNo",
+      "inList": false,
+      "inForm": true,
+      "readOnly": false,
+      "translit": false
+    },
+    {
       "name": "maintenanceRef",
       "label": "Maintenance Reference",
       "type": "string",

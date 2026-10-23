@@ -67,7 +67,10 @@ function validatePayload(fields, payload, { partial = false } = {}) {
   const result = {};
 
   for (const field of fields) {
-    if (field.readOnly) continue;
+    // Calculated fields are server-owned. Generated identifiers (`autoNumber`) are
+    // assigned once by the backend on create and are never accepted from clients,
+    // so a record's identifier cannot be changed or forged through the API.
+    if (field.readOnly || field.autoNumber) continue;
     const hasValue = Object.prototype.hasOwnProperty.call(payload, field.name);
     if (!hasValue) {
       if (!partial && field.required && field.default === undefined) {

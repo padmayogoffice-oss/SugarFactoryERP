@@ -74,6 +74,18 @@ const fields =   [
       "translit": false
     },
     {
+      "name": "equipment",
+      "label": "Equipment",
+      "type": "ref",
+      "required": false,
+      "ref": "Equipment",
+      "refLabel": "code",
+      "inList": false,
+      "inForm": true,
+      "readOnly": false,
+      "translit": false
+    },
+    {
       "name": "reason",
       "label": "Reason",
       "type": "select",

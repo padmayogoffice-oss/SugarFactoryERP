@@ -66,6 +66,18 @@ const fields =   [
       "translit": false
     },
     {
+      "name": "salesInvoice",
+      "label": "Sales Invoice",
+      "type": "ref",
+      "required": false,
+      "ref": "SalesInvoice",
+      "refLabel": "invoiceNo",
+      "inList": false,
+      "inForm": true,
+      "readOnly": false,
+      "translit": false
+    },
+    {
       "name": "amount",
       "label": "Amount",
       "type": "currency",

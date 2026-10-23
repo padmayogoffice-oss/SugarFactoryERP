@@ -38,6 +38,18 @@ const fields =   [
       "marathiName": "nameMr"
     },
     {
+      "name": "equipment",
+      "label": "Linked Equipment",
+      "type": "ref",
+      "required": false,
+      "ref": "Equipment",
+      "refLabel": "code",
+      "inList": false,
+      "inForm": true,
+      "readOnly": false,
+      "translit": false
+    },
+    {
       "name": "category",
       "label": "Category",
       "type": "select",
@@ -117,6 +129,18 @@ const fields =   [
       "readOnly": false,
       "translit": true,
       "marathiName": "locationMr"
+    },
+    {
+      "name": "department",
+      "label": "Department",
+      "type": "ref",
+      "required": false,
+      "ref": "Department",
+      "refLabel": "code",
+      "inList": false,
+      "inForm": true,
+      "readOnly": false,
+      "translit": false
     },
     {
       "name": "status",

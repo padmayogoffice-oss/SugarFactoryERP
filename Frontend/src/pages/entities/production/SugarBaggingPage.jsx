@@ -73,6 +73,18 @@ const fields =   [
       "translit": false
     },
     {
+      "name": "item",
+      "label": "Product (Item)",
+      "type": "ref",
+      "required": false,
+      "ref": "Item",
+      "refLabel": "code",
+      "inList": false,
+      "inForm": true,
+      "readOnly": false,
+      "translit": false
+    },
+    {
       "name": "bagsCount",
       "label": "No of Bags",
       "type": "number",
