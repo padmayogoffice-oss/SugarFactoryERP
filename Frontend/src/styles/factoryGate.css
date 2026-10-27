@@ -22,18 +22,19 @@
   width: min(100%, 640px);
   overflow: hidden;
   border-radius: 16px;
-  background: #fff;
+  background: var(--sf-card);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
 }
 .fgi-svg { display: block; width: 100%; height: auto; }
-.fgi-caption { padding: 10px 16px 12px; text-align: center; background: #f0fdf4; border-top: 1px solid #bbf7d0; }
-.fgi-caption strong { display: block; font-size: 15px; color: #166534; }
-.fgi-caption span { font-size: 12px; color: #4b5563; }
+html[data-theme='dark'] .fgi-svg { filter: brightness(0.85) saturate(0.95); }
+.fgi-caption { padding: 10px 16px 12px; text-align: center; background: rgb(var(--c-emerald-50)); border-top: 1px solid rgb(var(--c-emerald-200)); }
+.fgi-caption strong { display: block; font-size: 15px; color: rgb(var(--c-emerald-800)); }
+.fgi-caption span { font-size: 12px; color: rgb(var(--c-slate-500)); }
 .fgi-skip {
   position: absolute; top: 10px; right: 10px; z-index: 2; padding: 4px 12px; border: 0; border-radius: 999px;
-  background: rgba(255, 255, 255, 0.85); color: #334155; font-size: 12px; font-weight: 600; cursor: pointer;
+  background: var(--sf-card); color: rgb(var(--c-slate-700)); font-size: 12px; font-weight: 600; cursor: pointer;
 }
-.fgi-skip:hover { background: #fff; }
+.fgi-skip:hover { background: var(--sf-elev); }
 
 /* factory slowly settles into view while the gate opens */
 .fgi-scene { transform-origin: 320px 140px; animation: fgi-zoom 3.7s ease-in-out forwards; }

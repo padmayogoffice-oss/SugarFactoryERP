@@ -19,7 +19,7 @@ function RecordsDonut({ overview }) {
       <div className="flex flex-wrap items-center gap-6 px-5 py-5">
         <div className="relative h-40 w-40 shrink-0">
           <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">
-            <circle cx="50" cy="50" r={radius} fill="none" stroke="#f1f5f9" strokeWidth="14" />
+            <circle className="text-slate-100" cx="50" cy="50" r={radius} fill="none" stroke="currentColor" strokeWidth="14" />
             {total > 0 && overview.map((item, index) => {
               const length = Math.max((item.total / total) * circumference - 1.2, 0)
               const segment = (
@@ -88,7 +88,7 @@ function RecoveryRing({ percent }) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-xl font-semibold tabular-nums"><CountUp value={Number(percent) || 0} />%</span>
-        <span className="text-[10px] uppercase tracking-wide text-slate-300">Recovery</span>
+        <span className="text-[10px] uppercase tracking-wide text-white/70">Recovery</span>
       </div>
     </div>
   )
@@ -118,7 +118,7 @@ function CaneScene({ production }) {
         </span>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="sf-scene overflow-x-auto">
         <svg viewBox="0 0 960 230" className="mx-auto block h-auto w-full min-w-[640px]" role="img" aria-label="Animated illustration: sugarcane is trucked to the mill, crushed, boiled and bagged as sugar">
           <defs>
             <linearGradient id="sf-sky" x1="0" y1="0" x2="0" y2="1">
@@ -245,23 +245,23 @@ function ProductionBand({ production }) {
     { label: 'Cane crushed', value: production.caneCrushedMt, unit: 'MT', dot: 'bg-emerald-400' },
     { label: 'Sugar produced', value: production.sugarProducedMt, unit: 'MT', dot: 'bg-sky-400' },
     { label: 'Molasses', value: production.molassesProducedMt, unit: 'MT', dot: 'bg-amber-400' },
-    { label: 'Bagasse', value: production.bagasseProducedMt, unit: 'MT', dot: 'bg-slate-300' },
+    { label: 'Bagasse', value: production.bagasseProducedMt, unit: 'MT', dot: 'bg-white/60' },
   ]
   return (
-    <section className="sf-rise relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900 p-5 text-white shadow-lg sm:p-6" style={{ animationDelay: '200ms' }}>
+    <section className="sf-band sf-rise relative overflow-hidden rounded-2xl p-5 text-white shadow-lg sm:p-6" style={{ animationDelay: '200ms' }}>
       <div className="relative flex flex-wrap items-center justify-between gap-6">
         <div>
           <h2 className="text-base font-semibold">Season production</h2>
-          <p className="text-xs text-slate-300">Totals across all recorded shifts</p>
+          <p className="text-xs text-white/70">Totals across all recorded shifts</p>
           <div className="mt-4 grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-4">
             {items.map((item) => (
               <div key={item.label}>
-                <p className="flex items-center gap-2 text-xs text-slate-300">
+                <p className="flex items-center gap-2 text-xs text-white/70">
                   <span className={`h-2 w-2 rounded-full ${item.dot}`} />
                   {item.label}
                 </p>
                 <p className="mt-1 text-xl font-semibold tabular-nums">
-                  <CountUp value={item.value} /> <span className="text-xs font-normal text-slate-400">{item.unit}</span>
+                  <CountUp value={item.value} /> <span className="text-xs font-normal text-white/55">{item.unit}</span>
                 </p>
               </div>
             ))}
@@ -282,7 +282,7 @@ function ColumnChart({ items, unit, tone }) {
         const value = Number(item.value) || 0
         return (
           <div key={`${item.label}-${index}`} className="group relative flex h-full min-w-0 flex-1 flex-col justify-end" title={`${item.label}: ${value.toLocaleString('en-IN')}${unit}`}>
-            <span className="pointer-events-none absolute -top-5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-slate-800 px-1.5 py-0.5 text-[10px] text-white opacity-0 transition group-hover:opacity-100">
+            <span className="pointer-events-none absolute -top-5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-slate-900 px-1.5 py-0.5 text-[10px] text-white shadow-lg opacity-0 transition group-hover:opacity-100">
               {value.toLocaleString('en-IN', { maximumFractionDigits: 1 })}{unit}
             </span>
             <div className={`sf-grow-y w-full rounded-t-md bg-gradient-to-t opacity-90 transition group-hover:opacity-100 ${tone}`} style={{ height: `${Math.max((value / max) * 100, 3)}%`, animationDelay: `${index * 45}ms` }} />

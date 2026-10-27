@@ -25,6 +25,29 @@ function Icon({ name, className = 'h-5 w-5' }) {
   )
 }
 
+/** Decorative sugarcane silhouettes; `data-parallax` makes the layer drift at its own speed (see useParallax). */
+function CaneLayer({ speed, count, minHeight, maxHeight, seed, className, style }) {
+  const stalks = useMemo(
+    () => Array.from({ length: count }, (_, index) => ({
+      x: 16 + index * (1168 / count) + ((index * seed) % 5) * 3,
+      height: minHeight + ((index * seed) % 7) * ((maxHeight - minHeight) / 6),
+    })),
+    [count, minHeight, maxHeight, seed],
+  )
+  return (
+    <div className={`sf-cane-layer ${className}`} style={style} data-parallax={speed} aria-hidden="true">
+      <svg viewBox="0 0 1200 140" preserveAspectRatio="none" className="block h-full w-full" fill="currentColor">
+        {stalks.map((stalk) => (
+          <g key={stalk.x}>
+            <rect x={stalk.x} y={140 - stalk.height} width="5" height={stalk.height} rx="2.5" />
+            <path d={`M${stalk.x + 2.5} ${140 - stalk.height} q-16 -4 -22 -18 q14 1 22 18z M${stalk.x + 2.5} ${140 - stalk.height} q16 -6 24 -20 q-16 3 -24 20z`} />
+          </g>
+        ))}
+      </svg>
+    </div>
+  )
+}
+
 function CountUp({ value }) {
   const shown = useCountUp(value)
   return typeof shown === 'number'
@@ -56,12 +79,12 @@ function LiveClock() {
   return (
     <div className="min-w-[150px] rounded-xl bg-white/15 px-4 py-2 backdrop-blur" title="Shift timings assumed: A 06-14, B 14-22, C 22-06">
       <p className="text-xl font-semibold tabular-nums">{now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</p>
-      <div className="mt-1 flex items-center justify-between text-[11px] uppercase tracking-wide text-emerald-50/80">
+      <div className="mt-1 flex items-center justify-between text-[11px] uppercase tracking-wide text-white/80">
         <span>Shift {shift.name}</span>
         <span>{Math.round(shift.progress * 100)}%</span>
       </div>
       <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-white/20">
-        <div className="h-full rounded-full bg-emerald-200 transition-all duration-1000" style={{ width: `${Math.round(shift.progress * 100)}%` }} />
+        <div className="h-full rounded-full bg-emerald-300 transition-all duration-1000" style={{ width: `${Math.round(shift.progress * 100)}%` }} />
       </div>
     </div>
   )
@@ -81,8 +104,11 @@ function Hero({ name, production, moduleCount }) {
   const today = useMemo(() => new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), [])
 
   return (
-    <header className="sf-rise relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-500 px-6 pb-14 pt-6 text-white shadow-lg sm:px-8">
+    <header className="sf-hero sf-rise relative overflow-hidden rounded-2xl px-6 pb-14 pt-6 text-white shadow-lg sm:px-8">
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+        {/* two sugarcane layers at different depths: the far one drifts more than the near one */}
+        <CaneLayer speed={0.34} count={34} minHeight={52} maxHeight={112} seed={5} className="text-white/10" style={{ bottom: '-12px', height: '118px' }} />
+        <CaneLayer speed={0.12} count={22} minHeight={34} maxHeight={82} seed={3} className="text-white/[0.14]" style={{ bottom: '-18px', height: '86px' }} />
         {crystals.map((crystal, index) => (
           <span
             key={index}
@@ -123,9 +149,9 @@ function Hero({ name, production, moduleCount }) {
             {today}
           </span>
           <h1 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
-            {greeting()}{name ? `, ${name}` : ''} 👋
+            {greeting()}{name ? `, ${name}` : ''}
           </h1>
-          <p className="mt-1 max-w-xl text-sm text-emerald-50/90">
+          <p className="mt-1 max-w-xl text-sm text-white/90">
             {production?.entries
               ? `Current season: ${formatNumber(production.caneCrushedMt)} MT cane crushed at ${production.recoveryPercent}% recovery.`
               : 'No crushing data recorded yet. Add shift production entries to populate this dashboard.'}
@@ -135,11 +161,11 @@ function Hero({ name, production, moduleCount }) {
           <LiveClock />
           <div className="rounded-xl bg-white/15 px-4 py-2 text-center backdrop-blur">
             <p className="text-xl font-semibold tabular-nums"><CountUp value={moduleCount} /></p>
-            <p className="text-[11px] uppercase tracking-wide text-emerald-50/80">Modules</p>
+            <p className="text-[11px] uppercase tracking-wide text-white/80">Modules</p>
           </div>
           <div className="rounded-xl bg-white/15 px-4 py-2 text-center backdrop-blur">
             <p className="text-xl font-semibold tabular-nums">{production?.entries ? <CountUp value={production.entries} /> : '0'}</p>
-            <p className="text-[11px] uppercase tracking-wide text-emerald-50/80">Shift entries</p>
+            <p className="text-[11px] uppercase tracking-wide text-white/80">Shift entries</p>
           </div>
         </div>
       </div>
@@ -176,7 +202,7 @@ function KpiCard({ kpi, index }) {
         <span className={`absolute inset-x-0 top-0 h-1 ${tone.bar}`} />
         <span className="sf-spot" />
         <div className="relative flex items-center gap-3">
-          <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br text-white shadow ${tone.icon}`}>
+          <span className={`sf-kpi-icon flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br text-white shadow ${tone.icon}`}>
             <Icon name={kpi.icon} />
           </span>
           <div className="min-w-0">
@@ -193,7 +219,7 @@ function KpiCard({ kpi, index }) {
 function Ticker({ kpis }) {
   const items = [...kpis, ...kpis]
   return (
-    <div className="sf-rise overflow-hidden rounded-full border border-slate-200 bg-white py-2 shadow-sm" style={{ animationDelay: '80ms' }} aria-label="Key figures">
+    <div className="sf-rise sticky -top-2 z-10 overflow-hidden lg:-top-4 rounded-full border border-slate-200 bg-white py-2 shadow-sm" style={{ animationDelay: '80ms' }} aria-label="Key figures">
       <div className="sf-marquee">
         {items.map((kpi, index) => (
           <span key={`${kpi.key}-${index}`} className="mx-5 flex shrink-0 items-center gap-2 text-xs text-slate-500">

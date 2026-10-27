@@ -1,11 +1,11 @@
 export default function Modal({ open, title, onClose, children, footer, wide = false, panelClassName = '' }) {
   if (!open) return null
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/50 p-4 sm:items-center">
-      <div className={`w-full ${wide ? 'max-w-4xl' : 'max-w-2xl'} rounded-lg bg-white shadow-xl ${panelClassName}`.trim()}>
+    <div className="sf-modal-backdrop fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/50 p-4 sm:items-center">
+      <div role="dialog" aria-modal="true" aria-label={typeof title === 'string' ? title : undefined} className={`sf-modal-panel w-full ${wide ? 'max-w-4xl' : 'max-w-2xl'} rounded-lg bg-white shadow-xl ${panelClassName}`.trim()}>
         <header className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
           <h2 className="text-sm font-semibold text-slate-800">{title}</h2>
-          <button type="button" onClick={onClose} className="rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700" aria-label="Close">
+          <button type="button" onClick={onClose} className="rounded p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700" aria-label="Close">
             ✕
           </button>
         </header>

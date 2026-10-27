@@ -22,8 +22,8 @@
 .sf-marquee:hover { animation-play-state: paused; }
 .sf-seg { animation: sf-seg 1.1s cubic-bezier(.2,.7,.2,1) both; transition: opacity .2s ease, stroke-width .2s ease; }
 .sf-tilt { position: relative; transition: transform .18s ease-out, box-shadow .2s ease; transform: perspective(700px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); will-change: transform; }
-.sf-tilt:hover { box-shadow: 0 14px 28px -14px rgba(15,23,42,.4); }
-.sf-spot { pointer-events: none; position: absolute; inset: 0; opacity: 0; transition: opacity .2s ease; background: radial-gradient(180px circle at var(--mx, 50%) var(--my, 50%), rgba(16,185,129,.16), transparent 70%); }
+.sf-tilt:hover { box-shadow: var(--sf-hover-shadow); }
+.sf-spot { pointer-events: none; position: absolute; inset: 0; opacity: 0; transition: opacity .2s ease; background: radial-gradient(180px circle at var(--mx, 50%) var(--my, 50%), var(--sf-spot), transparent 70%); }
 .sf-tilt:hover .sf-spot { opacity: 1; }
 @keyframes sf-belt { to { stroke-dashoffset: -24; } }
 @keyframes sf-carry { 0% { transform: translateX(0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateX(var(--sf-run, 520px)); opacity: 0; } }
@@ -52,7 +52,7 @@
 .sf-ring { animation: sf-ring 1.4s cubic-bezier(.2,.7,.2,1) .25s both; }
 .sf-live { animation: sf-pulse 2s ease-in-out infinite; }
 .sf-lift { transition: transform .2s ease, box-shadow .2s ease; }
-.sf-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 24px -12px rgba(15,23,42,.35); }
+.sf-lift:hover { transform: translateY(-3px); box-shadow: var(--sf-hover-shadow); }
 @media (prefers-reduced-motion: reduce) {
   .sf-rise, .sf-crystal, .sf-wave, .sf-sweep, .sf-grow-y, .sf-grow-x, .sf-ring, .sf-live, .sf-sway, .sf-drive, .sf-hero-truck, .sf-spin, .sf-spin-rev, .sf-smoke, .sf-flow, .sf-bubble, .sf-pop, .sf-cloud, .sf-marquee, .sf-seg, .sf-belt, .sf-carry, .sf-pill-active { animation: none !important; opacity: 1; }
   .sf-trans, .sf-level { transition: none !important; }
